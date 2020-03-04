@@ -182,14 +182,14 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .fh5co-nav {
-	margin: 5em 0 0 0;
+	margin: 15px 0 0 0;
 	@media screen and (max-width: $screen-sm ) {
 		margin: 0;
 	}
 	.top-menu{
-		padding: 15px 15px;
+		padding: 11px 11px;
 		@media screen and (max-width: $screen-sm ) {
-			padding: 28px 1em;
+			padding: 11px 1em;
 		}
 
 	}
@@ -206,8 +206,9 @@ h1, h2, h3, h4, h5, h6, figure {
 		}
 	}
 	a {
-		padding: 5px 10px;
+		padding: 5px 5px;
 		color: $brand-black;
+		font-size: 24px;
 	}
 	.menu-1 {
 		@media screen and (max-width: $screen-sm ) {
@@ -215,7 +216,7 @@ h1, h2, h3, h4, h5, h6, figure {
 		}
 	}
 	ul {
-		padding: 0;
+		padding: 15px;
 		margin: 5px 0 0 0;
 		li {
 			font-family: $font-secondary;
@@ -228,7 +229,7 @@ h1, h2, h3, h4, h5, h6, figure {
 			font-weight: 600;
 			a {
 				position: relative;
-				font-size: 13px;
+				font-size: 14px;
 				padding: 30px 12px;
 				color: rgba(0,0,0,.3);
 				@include transition(.5s);
@@ -1039,6 +1040,7 @@ input[type="text"] {
 
 	h4 {
 		margin-bottom: 15px;
+		margin-top: 9px;
 		font-weight: 700;
 		font-size: 13px;
 		letter-spacing: 1px;
@@ -1243,7 +1245,7 @@ input[type="text"] {
   right: 0px;
   top: 65px;
   z-index: 21;
-  padding: 6px 0 0 0;
+  padding: 5px 0 0 0;
   display: block;
   margin: 0 auto;
   display: none;
