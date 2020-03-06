@@ -132,7 +132,7 @@
 				</div>
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
-						<form name="contact" method="POST" netlify-honeypot="bot-field" data-netlify="true">
+						<form name="contact" method="POST" netlify-honeypot="bot-field" data-netlify="true" data-netlify-recaptcha="true">
 							<div class="col-md-6">
 								<div class="form-group">
 									<input type="text" class="form-control" placeholder="Name" name="Name" required>
@@ -147,6 +147,9 @@
 								<div class="form-group">
 									<textarea name="Message" class="form-control" id="" cols="30" rows="7" placeholder="Message"></textarea>
 								</div>
+							</div>
+							<div class="col-md-12">
+								<div data-netlify-recaptcha="true"></div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
