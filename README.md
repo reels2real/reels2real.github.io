@@ -1,5 +1,7 @@
 # reels2real.github.io
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/99ea8f5c-949f-4ebd-a09f-8946e2a92a61/deploy-status)](https://app.netlify.com/sites/reels2real/deploys)
+
 TITLE: 
 reels2real website
 
