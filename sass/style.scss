@@ -482,6 +482,7 @@ h1, h2, h3, h4, h5, h6, figure {
 			min-height: 500px;
 			z-index: 9;
 			> .slider-text-inner {
+				color: white;
 				display: table-cell;
 				vertical-align: middle;
 				min-height: 700px;
@@ -931,7 +932,7 @@ h1, h2, h3, h4, h5, h6, figure {
 			color: rgba($brand-black,.3);
 		}
 		a{
-			color: $brand-black;
+			color: rgba($brand-black,.5);
 		}
 		
 	}
@@ -1181,7 +1182,7 @@ input[type="text"] {
 	  width: 25px;
 	  height: 2px;
 	  color: #252525;
-	  font:bold 14px/.4 Helvetica;
+	  font:bold 24px/.4 Helvetica;
 	  text-transform: uppercase;
 	  text-indent:-55px;
 	  background: #252525;

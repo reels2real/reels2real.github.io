@@ -401,6 +401,7 @@ h1, h2, h3, h4, h5, h6, figure {
   z-index: 9;
 }
 #fh5co-hero .flexslider .slider-text > .slider-text-inner {
+  color: white;
   display: table-cell;
   vertical-align: middle;
   min-height: 700px;
@@ -889,7 +890,7 @@ h1, h2, h3, h4, h5, h6, figure {
   color: rgba(0, 0, 0, 0.3);
 }
 .contact-info li a {
-  color: #000;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .form-control {
@@ -1159,7 +1160,7 @@ input[type=text] {
   width: 25px;
   height: 2px;
   color: #252525;
-  font: bold 14px/0.4 Helvetica;
+  font: bold 24px/0.4 Helvetica;
   text-transform: uppercase;
   text-indent: -55px;
   background: #252525;
