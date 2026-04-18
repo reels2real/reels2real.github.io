@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mustard Fashion — Digital Growth Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mustard: #C9A227;
+    --mustard-light: #E0B840;
+    --mustard-pale: #FDF3D0;
+    --deep: #1A1208;
+    --charcoal: #2C2416;
+    --brown: #5C3D1E;
+    --text: #F5EDD8;
+    --text-muted: #B8A88A;
+    --accent: #E07B39;
+    --green: #4A7C59;
+    --slide-bg: #110E06;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0A0804;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Slide container */
+  #deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 64px;
+    opacity: 0;
+    transform: translateY(30px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    background: var(--slide-bg);
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .slide.exit {
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Decorative motif overlay */
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 85% 15%, rgba(212,160,23,0.06) 0%, transparent 50%),
+                      radial-gradient(circle at 10% 85%, rgba(212,160,23,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  /* Block-print corner motif */
+  .motif {
+    position: absolute;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .motif-tl { top: -20px; left: -20px; width: 200px; height: 200px; }
+  .motif-br { bottom: -20px; right: -20px; width: 200px; height: 200px; transform: rotate(180deg); }
+
+  /* Nav */
+  #nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+    background: rgba(26,18,8,0.85);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 40px;
+    padding: 10px 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  #nav button {
+    background: none;
+    border: none;
+    color: var(--mustard);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  #nav button:hover { opacity: 1; }
+  #nav button:disabled { opacity: 0.25; cursor: default; }
+
+  #slide-counter {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .dot-nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(212,160,23,0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--mustard);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  /* Stage label */
+  .stage-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212,160,23,0.12);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mustard);
+    margin-bottom: 20px;
+  }
+
+  /* Typography */
+  .display {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  .display em {
+    font-style: italic;
+    color: var(--mustard);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .insight {
+    font-size: 13px;
+    color: var(--mustard);
+    font-style: italic;
+    border-left: 2px solid var(--mustard);
+    padding-left: 12px;
+    margin-top: 16px;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(212,160,23,0.15);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--mustard), transparent);
+  }
+
+  .card h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mustard);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .card p, .card li {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .card ul { list-style: none; padding: 0; }
+  .card ul li::before {
+    content: '→ ';
+    color: var(--mustard);
+    opacity: 0.6;
+  }
+
+  .card.highlight {
+    background: rgba(212,160,23,0.08);
+    border-color: rgba(212,160,23,0.35);
+  }
+
+  .card.highlight p { color: var(--text); }
+
+  /* Impact badge */
+  .impact {
+    display: inline-block;
+    background: rgba(74,124,89,0.2);
+    border: 1px solid rgba(74,124,89,0.4);
+    color: #7EC89A;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+
+  /* Task list */
+  .task-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 860px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .task-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(212,160,23,0.1);
+    border-radius: 10px;
+    padding: 13px 16px;
+  }
+
+  .task-num {
+    width: 22px; height: 22px;
+    background: rgba(212,160,23,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--mustard);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .task-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .task-text span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Revenue bar chart */
+  .rev-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 180px;
+    padding: 0 8px;
+    width: 100%;
+    max-width: 820px;
+  }
+
+  .rev-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .rev-bar {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--mustard-light) 0%, var(--mustard) 100%);
+    transition: height 1s ease;
+    position: relative;
+    min-height: 8px;
+  }
+
+  .rev-bar.current {
+    background: linear-gradient(180deg, rgba(212,160,23,0.4) 0%, rgba(212,160,23,0.2) 100%);
+    border: 1px solid rgba(212,160,23,0.3);
+  }
+
+  .rev-val {
+    font-size: 11px;
+    color: var(--mustard);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .rev-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* Pillar columns */
+  .pillars {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 860px;
+  }
+
+  .pillar {
+    flex: 1;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(212,160,23,0.12);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pillar-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .pillar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--mustard);
+    margin-bottom: 10px;
+  }
+
+  .pillar p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Split layout */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 860px;
+  }
+
+  /* Timeline strip */
+  .timeline {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 860px;
+    margin-bottom: 28px;
+  }
+
+  .tl-item {
+    flex: 1;
+    text-align: center;
+  }
+
+  .tl-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(212,160,23,0.3);
+    margin: 0 auto 6px;
+    transition: background 0.3s;
+  }
+
+  .tl-dot.done { background: var(--mustard); }
+
+  .tl-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(212,160,23,0.15);
+  }
+
+  .tl-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Slide 1 specific */
+  #slide-1 {
+    text-align: center;
+  }
+
+  .mustard-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--mustard);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mustard-logo::before,
+  .mustard-logo::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--mustard);
+    opacity: 0.5;
+  }
+
+  .goal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212,160,23,0.1);
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 14px;
+    color: var(--mustard-light);
+    margin-top: 24px;
+    font-weight: 500;
+  }
+
+  /* Closing slide */
+  #slide-14 {
+    text-align: center;
+  }
+
+  .big-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3.5vw, 44px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--text);
+    max-width: 680px;
+  }
+
+  .big-quote em { color: var(--mustard); font-style: normal; }
+
+  .cta-btn {
+    display: inline-block;
+    margin-top: 32px;
+    background: var(--mustard);
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Slide header row */
+  .slide-header {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 24px;
+  }
+
+  /* Keyboard hint */
+  #hint {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    font-size: 11px;
+    color: rgba(184,168,138,0.4);
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div id="hint">← → or click arrows</div>
+
+<div id="deck">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active" id="slide-1">
+    <svg class="motif motif-tl" viewBox="0 0 200 200" fill="none">
+      <path d="M10,10 L190,10 L190,190" stroke="#D4A017" stroke-width="0.5"/>
+      <path d="M30,10 L30,30 L10,30" stroke="#D4A017" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="60" stroke="#D4A017" stroke-width="0.3" stroke-dasharray="4 4"/>
+      <path d="M60,10 L60,60 L10,60" stroke="#D4A017" stroke-width="0.3" opacity="0.5"/>
+      <path d="M100,10 L100,100" stroke="#D4A017" stroke-width="0.3" opacity="0.3"/>
+    </svg>
+    <img src="data:image/webp;base64,UklGRkQjAABXRUJQVlA4TDcjAAAvX0IwEH/BKpKkVnyhAf8KMy9ssqHIbdsm6Kn/f2nSPWVFbts27f/P/WdWnQ0wbNs20n15bCe53kK3/1aNYmebvUW7fps1jltW0hhfAi+j5gGwIS5+lHBJCVNBAsIL/A5jFIT/G1+XCJCECZCgiLQqY2vR3a29vzt9387YzeoOcDerVbXvAO8Ad7PqTuuZjmc6ZpEZwe+q2neAHCEBwf/dkgMRkdTiy+Pttq2qtm3bKvj+FyjiW4H///O0vLT1PofN+YroPy3YduM20mWMtjkaBSTADWT2P1qybbdtpQIpUYxiEHPAGDT/4ZH3ngtc0G3X65+I/nujbTdva9u24JEekxE9gQ7wQyQlea2f6X+4p+jx+KckJk7SLC+rumk//TDNy27tnguSW2urj4Xy3bRdP4zzstnjelnL/wMkNcK4dxtc6RiKLwUavVc0s//AQX6uTyIaILE7QNzXLQAE96FAwxm96J8AImkDHC6/bmtXgPE7YQdBDMrS96I0EeYM39oYF8F/J4KGMcoVj2NidpjTuJ1puf67g9h8JTRdP6324L9lZGAcHFlaAF9y3maC5VuJr6VlO17FWIolIWzgUlohNva8tE2pjFB+KhE3cmg5WnSsBAXEPJ0iptQBdOnycZc+mJSvwh+RWNgTElWzQChOBhjSF5OShRyPkEl7TfNI9m7TSQ9T+mRSuluWZG85bEjAcgB+Xx7G9M2k1rolaggGZ5sNYn0yQ//R8NilY1ixAyy5xALMKWXhVOSjSb1QkMsIC7qE3D452NNXQymkLZMygEt+nq854Dy7KkD32fCiOWIi9RBbJkxXHbCY7+as7LkS6rZvYwIYS/zoQ9yL9N2kFRdDYjxAXLzz83nj5TU+jPT6JWURDhyRQnYBnPYXuSU1HPjV/paCP+sYhWUFN06Ttya9SizCX1OkfbN/3P0MGKxtf+OEq3xG4sr+O4P9TYF9wr8u4L/+ymB/XbB/8ewz9e+qmP1tgf38kYH0UL9xNvrQPzFQP/+vBOjnBPO3BXrIr5sN/vpnLga8/FsX+zPDr5z9Z4bfvdjxF87+hYsdMPEnBvL7V87mib8vgDe/8br6HxkA/sKH/ImzWfovmh1n5bvtuq59Fy+lO+8V7+ZSsymz6L9Innl5Pazg82nrMsPXdOXD9Sq9IXj2M6+a7rL6dMu7yBKjLVpuL4os1tb03bTnqy7zV+RVLPiDIvKizBxsztvJ8tfZXqx9EflJ1oy7pY8EuDjZxzoJQcEry8uXnpbRM80KNTUfZb9Ytv+Cvpb+nRq8MaPxywZvAklS9cvBrbaWuGefPuUzTJw8LufksjZpS254eDm8ipTarKKbuA8AEckt5nXNI8nyoqrpkyJWZtsm3YI47VbmAWvBJ621O2OPegYPBQDVzfapBrsnB2V1NmeIgtVDWxrIZ00/CZvWjS53r4kG0/mw43vK80dj2KXNzozU4YK3V/qCqZF7mEh3quSSSrxy6onW9wOcC4KF+qE0aoFM42Ratp1GQik4pJqpWYQZO2f+1kTFsJ3648VNGl5zm8nZlxg1qadlJabzcOVDZomobDh9wOgX6vtSOnY57RVjwo+lqnaxu7OKT39G8s7VxSy62EbCfgGxydpyVn1yhXfTYRECqulrfscfqskHaSo/4+BAzLi+7OBTpVi/c0D1oU9nvzevK5A5y/bAzu1gkL5XZhMwqPTtRJoV0Ci7xB5z/QiY+ACOLqoFjgtk9gfEGVcRadA7RKp5k3coBDBlS2qcGaDhKTN7ppxko7EBlKP6svzct1IndNpfBMjNutMK3kPBVAicWGKzCzpLMfGYFAwR9Bh8hoDZAcME84alWBgjUENbeL1rdzfqoHF7lwRbl/rAgIC5QjTlC2AeWYsian6JcTNasTzmyG65q3T2wLGKLXSSiyg5MJkG3lCszN2YQ4TEeqoBDE1uI6YTKuHw3hleA29GHBAH61Z4CFIOEUWRy6PnLsD22fXp3pC/N5lIpgfQ/3ztQuirCrNI/EWADbLr0yIHhFFupXFZuUltn8ObPXcVqCHU1R3kSqYHnEXaHoxdXZZl1fQzUwfHxGAgQP6cVHAEx/4E+GT9VFkSR/ErrwdZb1sZZ+GqAZoAA0yyFZEiUNM5WzLBMLlS29C+T1/U3bhf5oFxD9NLPfvjxMCBo8l8rJteUI3zH3prOsIDVVHWl9XC7eUoIGyEjNtBAxxk7VjG+ExyItpAuycIwnsHD4jvXSHuqX60TT4rH7oly7OVTLJH5SHAdhGpVHSq4MC+Y96OHav5LliyD7w1IyeyIyWCCUJNyN7tuDmFq2UQkzU+R70gHcuDdwrjjsh0UZU5dorc+svPsOxWto3Q6SJNdx44Lbs+1KiJWBzCPx8lq2dUW3fIsws3SvCc2LFnuTGVbvdjTLZia07tXCvno2r76XStbPwlqNo6DiDc/hwP0snkcPWAiBBznU8CtUJ+UNZuDpofJJoe0NXrNPT9QOeP5eBlXdhjQu3ONl9qzrtQlFHcuJ+d5+0qBs/1Kn0Ya1ZVMMVpNLNniJ30qjZM5yKBlVFiCLx3hedsQcx2xsgWm2QRTDmbCq85jB5bzjS9pAXn8XP37kXdWpczLBAm5LitdHPVytTCKTspizFxizskamlhSF2nJvdlQlX8JjXMAMq+CU/zpcKZvw9VatBzTahB+AOePk5rsZpOIMfLWfP04LUBpobITTmT4u0JG2zUhRcPfopT4fbKxBZqgoOrws3mhJ3vcOd0fqGSzrxCATylYaSt7YucMjLV3EcKiXQvi+VljJtjSSEJg1y3lG+Cs0hr9ZxZByVNPEfNLhp6xkDyNclM6+xaP7+YoXwVVLyw9aplhdDL+YuJR0UYkQ9j9zkCOCW3u1c9gUQ7qN2qDNH+du0DJL73l19LBPhhn3RBRQNnY5PtpE3CfanTD1LNzk/jvBozHAIhwdalckgrHSckdD5kdQmrbENNNaPl831dahJaHYJlhFpSWyIvp5UHMp+L31tWbRSgRMzmPusWMzIi8hCISlIJM/If54cncMUctZOjcrOSml1OB6efBzszADMZrn1pPAtd5fzwccVEgiD4dZem4RQxaz9n/3u+usip2qYb5uzCPV9J6zUkblVvPKyEnk1hL1V46yum0gIz61R781yBvQ/nhgS4WQ/iyxbYRHlohwnfYu+qInjHTuTpVysg/SnP5Yzi4q0wAbj6rRZfrsAYal09gtoTpgi5hVoryybya+Pa3S0SMbb3HNUcyB0a8o02JShQrX17nsoDSl/3SbytwKONXZlpBIOOyrc6r9JQnZg2oyWHFPmOSi/aeOBWzHsunCqIcPoGebWHoP7Flc+SdnfFHqSO/OyFT69P1eRKbp4TgzN2iIJ8e6sDAzI884uXb8spSp0FOFkWjQGnZxQ9reDK3rufY+0iDJMxhqdIglZnqhbjALdMrf+wlWgY/L4EOVSemO31843ZuEPwWOHHjKRixsR9DQGjv9SHCsQ7ounp2w4vnBs/4MepSMSHYFzd2jjHv1BkNf5hIlSWs7eMcVcFTlOcWIyF2zzZJTK+8tolE8OISQSeDstXkBRGwRz9OpJM4MX6do2NZJG/VDrZBbT64WtHyczOXbN5QhEScdbdfr5fzyRLvXwHk9iSC5eHQ2ONtDpmaZFGULrQeO6R1AoHggdm9cLG21lSNfDuR2ap7eg8G0LA4JnSkFJn3q2FnV7iXcNn5u7bFHsdh5aqdEYPYOHbmokd1566dIMwoxKHttDESePZARm0MBycgtG7czeTXG1jT6HDFKDp6CnYIgUxpQ4MFvGUeUvFxgPOgPnTgdOhKCQuGZ0llTzfeH85CmqIe69lWmwENtWMyAdnSuX390s/JDRItZbsJFFJMm2t997MTGo7FgVBVikkiIu8YYK2VP7zGHQK6+2bTVBHzDmLJOBgPLraA6Y6BYE4upgLt8IsicHNs+DXxRi1+6IjI00YoDTwVPNVGR0BY633KNhEUmL3U7PGLZNKwqrAYlFb1ysMc4h+tWt2iA/qhXrqdZooVYBB6ct3eA10cnaiYvun0OMxhZnGjfZ1S2GzEULR6kQWjZqH3x6x8UpIh+iAQjZeHNtipZFkc58PKoQ4cppwCXT1xi7Y4trIPot3U4uXq+TQ/5ckRvG63rDzbgYklMTEgnsPBeGDDWbaSyfb6h2iASsOgtZbEmJwe5tixsyCi1rfp3OA1KSZcBfzNY6XjSIe1GJ0EWIyKACq/MHAwbKO9FZqOxSywXEKcr5TgEV3kPqd1vPVas27aS0qc7PJ37Vg9hah/etUH1EquKAO9NyQkNlWHg4oDVI05COZlflmX6g47yaCzpxpGvK61AiQorlvo9x5jbat+fqA0CIvOsDV7JSXh2DVTH/OfccepB4qwldYLNYRYBcVrez7QC+1xVsR8nJswQAt+ab9doXq3CaKrZOOMC1VxaC+n3zS+lUEZmfYeTeofKP5KFUtwFZpgO68mw68ebxQtPbzDAbCvK4TuA/AkjQxuq2TvWkiszBc6Gz8jyrGLFYUsZjaYqYKYNQoJoKzPwU8M9uHN+hmKxXVEFz5NRKQAT1pDitgrQk2+Lwbt1gdDqsFrJrrAI6c2xT7rswSZJHdP1mYbKFRVxX12VN/QDMVaoC200Lr8jDPnbxDMUXhx6mAwGdqtCBMtt9ivcUxeRxznQQBiLeSuNlBtk7C4pZCTWKLTbv2wOlDODEP1rDoJ5QBWKZV7Ezdptj3uR9Cg0cVPQ8fq0e4Ymf2jSRtN3F/h1I2P05NcsE0a9efdN+xIAmIWtlI0Uxl3i0guP8Skb65YlM3IxJIuYtE5bgf+OpsLUAogKZL7fgNUewIuu6JRPWD1MCien6veTejlW2iBdsNFCXlSEagebd7SP7Z2N8Ei1QAZapJD2yjqY+TKEyL32Pf2aEChw1T7LA/q5jLdivgWTCUoa99KCLd7LskTNYu4t+4EpNeMVUZJZfaVhVODD3vhg3WPUQVDqsDuILdp9jXGLE9hr9pjB5L89QrxvwTWkzazFbgAds06e4LYqI7GX/JWy8bqBt+3o0boHmIajZlVakY8lmAbJWxJzDsUoIXvQ7/pD+o2JnDbwtDTdikiymmOyaM3EKXAYCICbvuqZtNdNVcN0B6KiUuCVrMcaufjNjLpIPsX94AGKEQOIdpf6aWNjeDQPjoK9JJrpY85VY618/+mcW0sgExBNWyr1QA0NseTlJWut/mhV2slR1QXiwH0Ds3KV38J2To7TvDXGnJi1POj8tMiGJh59243TrC1NTMxqQqyL2KyXfhkBimCDXY1+LWxZJ64vfX4Tkvh1H/pZS/4B8tMKlA9SU/c96NHKc873aC8c9GNikIUy9cMV96e3Fqk+grf3QXeQJykLrEFYxdsm+iS43r5iU7KO2bZXW0C7SqbtPfJpubdrN9ZzIozERMwLkQgCKs0Xrccd3TJHRt4AAwlZHLxS/cruGG8E0Bs4xmTYFGBi9mNQGldLKpI1TXPUkqRLbC7oliAt2wFOII7fR0B+bhAJJ8dqmBHvOv+Qoi0DDc8YNSzC1xv162dEYdfN5NDSBJyvNuV8o3m+kYqphSB9XvjuEMyZli/+uWlCVud0KL5UfMLoPLWWChV9vXSFKd6qbsgNlc3eDrBtrZ9DiNbJHQW+/716L5PSMWHBUY7jXvViwWc2m3t3G/uB5sObwj0HPHkMXoccGKYb/ecV/QB7vh5uueqlslhO2giEWK9h3yvmOOF3FDGBKNfbMfrXndw6rO6zKzgLqFcnb4+14E3hekA8isTPO6uADFlKdXJ+E0VmrbkttANIjzqa1RGL0rhOqOLdFelwIah1o3sCGLce3vuC/og6uB4r6gkMU0h/tvnKHQcpkI8KcHhkzFoM+0lUZTcVh/kchSk+uUHVfe+vuj9s2GSfCUZvbP2Dern9HMyG2Qzj25SbEW2EQ1rnxaNcx3q7NuwElQEzTp+AP3bQRIYEv1s4+fdd2l2oks4h1o0NzjuvEC//WwXh7drBBzgfcFaW3uHAKsG5zwc9Y9Ia162eA4zcQPAPB0mN1hNm66xbpBvHA16XGDMR4i+KZRvS5ODwqx4s7fQNddmp+x7kmdEHDfrF4ieDHdaX35gRx2f9zhusuWVVGm6J74dbXYcH8BlUC1WALrGKEh+nnFuOHqh+hkX4oqrnsiFm5RLL9eL5VmZbPiZWM3yH6I95BvvBwkbaCtta/rDVTQZj/puiXGv+51S/e+7wUx6zbFtkuhj87E+nII/FRe+zbOlIrUaCWKtcR+gm3yFmGMeOhJT3UF+NZdN2Aq3+S+icrFrNK6JzLs5xVb7Smr0fkndQfNDe47NgltoediE5txAaC470xVKuZ5nhpCrHueYELf9+K+xZhlP/G6y2tob5WukTY5GEGT7i58scRKJFZ+QvXjqfc9E08rqGu3SHfejWLoYswCvWLM3nute75ZBbsTzMSHH62eC/PzUbjvxagyaLCIRL/BZyx2mdr3tVN7jejknDijUIbDhr5unKP6uoFqMZ7t23dgrO5QbCYWbw8d/lPswY/CvtlR+Wksu9G8s2B10/uOvaV6dvT6xUIDsfjW654X+ksp1OyjvkOxkfUFanfmQq7vFO47NvvKIASE730AnkxBlqrMPe+b+BAf6LY/9fZtIG1H8zOK4Xpws32z+Wk8zGjvUGykRqzkLiK6DDUKsCosNGKcNcaICFTv2+MMGnf4Oyv7zyl2qR0scWVrX7eUGt/dnRCHO2QPusvINSSoUsje9RakCXrKywqEVwGuW9Ld+w/s2x4hin3D79u46b5/XM8zxStcrL9JjQYM3IdPFQeU0OuZwr5/+1St/b7ueRGv0JRSNkRN+YpPWrat/rr6TdYNAlwXp17MPxgUI+e1aUB/2qD4IRViZ488952p3AN7FabdDs9WNpVBL1tbcqgufQS0+r6gG6x7HlYbDqt63zG2HqJ6j/7KT6Lp0ICeeuXMz1UEOX1033sKI6P2D4gDxoTn8wZyke6wz3VQcSswcTDaxez0I+87ZlTvm0iy/Z+phLgfvfcMSlAYv1OF9aEgLWKzdl39FiJq9I4hwZt+k9TJcgB7dIGwoCsZLKy1OPXaBPrm0Pv+gyTsqn1fdN9EwVTkydQvCC1+5xyLHdxnYfxlAGRald35gnLOIwJEt9e61HOWVkiPWm9ftguonuORrMxXnmhbEF1sCLTvChurQhSqSpdsyh9knXbvOD30VSEWTXe+E2Fwb4iZIa3aY9boGbPrJItmSNWIQvqHh/v72Uqe8R+jSq13ryvxKhho7ep5y/aXdPQ11g0iqfJ8+NeIHc5DoTUSHFxpjEyAmh5axnSjmAR74iSwkSDriTpf/OJ0n+8ZOFXPs9UxGbCYauleCzLaNAGDFHq/GPk9xFc5ya3gWGuXl1c3vpIb0uqMAhQ6Q6T8/vSvBlZQtPCWmTOpU88rkcjN8eQwnYghI+Ua5PfGYzsy0dNWnjIe3ty8JR/bwy8oog0W9FlorDb2V2xTrvogT/tQ/tcyPwA21sznmTpCjSO4pyGyQcfJUq2v1Mch6DloX7HsO5sYb1Zw87G5+Dhq6Mi6yehzJ0G+04CplpzYGM9VCKbj6lqzDZ12xsetpfG+ngYPmlz+PXvC2DpZgZ858vveAixEfL5/okLtxXhdaOwYAZ9TJ4EOouX80JdEmie8Krjxi7zlENu2Um9ZXedXixhgzXhtJLvfpLe4zq8zqh7PJ3Hr0tQJ2Hu4Jd2Aqe49gQGjJtgtVgmsca/83eewf8F4hWAkUVjT3C0toUFkvBv7DI1XMTD3/Kt8zCyQR79OlNvl7pRfB5xf6p86ckJRk9BE3l/uBLcedq/8WiPeiyM9+4eXPDeZTzsVgIYo7zamTX31UCJYO+bGYWsa5vVYcvcxziFNDKl9R7Lr8LHvP/0wzhsxvZT2GWEd7VInaAjWMgrX9PsUyD5fc+bu9wG6hHK9vyPldmxxoGPvJXdFxUi/rslegKhE7WyTqDbTxUyV5sj5fziPlsezfRKa60uLyf3e4sk16eaAa5uq3XvsTF2vtW+q6t18xh1QXH2/MrAzsaGrqzKSHw2OsE8cv6QeyPv41NKXA4vMcm640I0kG9IO1bz509Z1+xm3U032Y+Qbj5HMpizyPM9eDl93jldSZtAVJk1mdP9hPoSvc2ei+Gr6N2bcnoPtJ4Kd89C176p8+X1ekuZl3V+NvAMS3cemSB+IrfiVFe/PIt3HEvI71IKa0alm1Y6yPYCa5fPOX7HzwMQecsUhMUM5JSrsZ/BIAJSkLx67pWA5ayW6VH64wgy85nlmZkBTCFnh1ZzzU8rf40KymyvAtZ8IRYXFFvFb7qFhjCF+75aLN8kOpt42furydKVRacuSyY2OQ/qCl1cLmRkziApCjj1P097sUnmgtpCiduIvWjIBLR0NpVpBNRlRLmFAhBK4uFbr1ckuagbnfMngGRxXBxx34VP8RhM9YIBYPDU50yzKyh6f/tfeY2QhrPhxgi6ldGWci27SQDQGz3yXkb4+6BH69qBR54a8Oa2UCgwu9FkcWGiEJz3MWQihw1MoS0hVEUnY40B1oMHBr4LAHCuwAoNvcR6CbZA8bOJVjp8cOAG37XpxKKjCq8lmwfjztS3zPMPJi0vW3P+bWTgGKdTC4rMS8yFaerjM7iA00l3QjGuKRPj/GQOmJFME8Qs7YfMt8Ct0oe0iNMx0tVMBrDty/rBwq1wVcGhmrWyWEASH35J8tjr6mNeGK3BkEMw8KXtKj5Pqvsa8V2Q764Rgn+p7xgObQtHFmBT61eUc/4eRYxYRji+3b0eGjeHbpwvsagkFNfXk+xK3MFBEx805Wqtzt7IynkJbcsk6If4cAbLhoAAUoBEOAjlCPbq/8dLTUdeNnFO7AFTNrjO4eSubvc+/57+oFnbMuUSZzqKLqa0H8ftQGKev++oekkspT6MeLpTYFmzhdNZf0ENLqCmLaAY0mH7xaAgOYbRv81T4JWR7DuuEDznhV1QQDydAXLzWD1ampaTv1uCWLeGbhrdlGvpPW1dFniax+RoU+lRdQzUx5YQtOaCf7JAZpXM/k40CjYAU8phBF9Uf3e5A/JWaHVqddJT1s3Pzwq3q4WoxUEAG/0HG7BpBaxPLj9slvh2HT9u8S+pche+xrfMyQJ63VPPpxXn0nrAHL7EOX0T8VZV59iKhzk0Wg/NRVmVZ5UipDNwyEXp0G98PGpJabz6r1BLY1e/pb0m7ylV06TLnr/2NzLFj/YLzAMIrEVJXPn/F+g+Ok3Pkr/hdno1FlnBzrjbj93glVT+tdHC2zWNbJsHummLE5uxVdeO6s4x16us80rfEpGX7Gcbz1fftO0/8nZ01w0xXEbd5aMmElZuq5hvlddcPfd+9c7+aZlAqeKCZvB3BcGWfutKxRfyl/kc6Gzrh9HhQqs3djHq+ztfjBsaoMhIxBs1/j2+/jzQvrtbRn5Xf6dB/lHo2/+oMbEz6vNL//ef/plH2vTtf/SW0qIi/7N96nLFwpfCXsKIy+j+QvOut+bW8/SPQhLM0a/ZhiR0VZ/iuRAGI7bsSeUSsH1b2jOjMZyVMcb4Fb76sG5m8Op99Cfyu0+8fY/sztdcO0rDHYOmnCxjWI8Rj8aW4zeTXI4ZtbFIy7tIY7QIh3XvL0CE9apWo+3k7FQ/b1HJDXUu1rqc9hOImTAkzN59KHrPLdFSnfnQ7TK4ZqnQM+9yXGiq/XHW+TV3G1qJFNlKkNmks9TLSSIJKXQCIgKkXoClOORsimCLVZ8oMegeO0R0mMRLaySLrd+DS0VFQKeeUPCrVXQKJsbrA6a+ixSoxDIDLRn87cqiE6LpRDoNMXNWEVirODIq0JpWl3gXDxZ46ZBSMi7zldqYjaA7eoCV23psYQQyiTwwXxF3ikjzAExyohEbwsNHI4OJGBjOwNSMpPYi5O69UIzFpWJLOUq8Cj6giRy+abif9QB0kiyJaJVEprOwUjgMWC8+wIx1HsYE8IEYsVM3LCmTC4zCPCKWlXgdhAgrp6eLcWjsE1mFz+vxY1sC5xd0XvDDmVPecarnOk1GMzPFQobf1SQIu/870Vq2SqHxRY2037/x0QDCSFUil925YwtkOHhBDUlrqTdAjm8Trum3dbMqQ+5IFRok9tOacF3Y8qQ83iQqwA08NcSOL9fYYpuhhW/e7bHR2NZRn8buDVIZ5KHviVBjxp0CzXreHbo1BlduKsJf4gP89Fcx1lnoR/1vPOEpuuJ6DLscaoHPvknQ3OVbXxh8Qif9kR47drKajbOjR4ZtniGQ4zck42olos2dOu+rWHvqmD7cw9WbSghtOobfUuxC8XcxxsVC1sP0ObsRiIujTE+Je3C3HxTAssTGibm6aJ1focJeK7Ci7PJl9r2OrSS/8QDhvirh13bDUq4BxSq6f68SJUH26g+i79VNCi8nygLsvjDIgS8b+6I2Cw4geG7NnsidO8zW/dQbI38ez6yK1pV4HteAABUOHrUZPx7Sca8afEtUV2dUtSyLnaeLycjYs7LydXww3D8Xd2PIcPje6ZQvOas09OtIX3LPU2+AQRhUIXEL01H1Y3wuPCCMK43DcQUQ32+pY7bxMn+T21T2YXQU6012s4olj3tdYqxACRFt2z1Jvg03sOCKWnGO1ivE1/IRozmc3mKWRm1cxZCKO5cB+9Ez2JLWYCJvVHjLDFVHICGuZo7ppqbfBysXl+cThsKPw/EDczTJWj8ehH9aF5R8fVyNOJpN2zENxN+b3kA56/zNsyPiwOgwJGlqlpd4aLnVPCxl2QIxzV10d4F06tZdsCnALcY/ue6YS799qB1C7cf11rcITfY25aanXgdjliak0j2frmLGvNaeD/lEYXP5WlQ2KfU/uE/17Ou7HMimeTLRj3TS0dK1z21KvhUUd9azkATIHmYVFlZ3TkfghaumFiFcM4LUIG9ZTTi0N0z/qTlxnfVAVh+389yzdttRrYdCvug7JM4xl8VIvlUeFYDTYqN4aHr1klsMnIekAce05CyUzC2mOulQeCMch30G01CuCHdByDnGfgLLyB4nIKRomlKcTTihgduMSafyTnWYTB9OctDcWVYC2Bl3RSEszd87jgReZuV0x2VJvB3FMXTKMYvw7aml5Z1mdFkP2zBmMkdmZ2bmGZ+K6K9D9bOEMmWVhu/mjEHZHZ11VrurzeKrlsOnZaYLCUm+Jjh7PoM6UtzUfkYqDzctuAwq/dpsK/kiHk4Rle9PUxQdI3UF226V9KfKGNmBLUhmbkSEK7TX+szuwuLEy/FAwCqNDnye+KVjp3EbENdRYTmot9WYwC406zYMfxnmP2FNMKQQAJGgvGvctCKEBVmSBtoumWwCewGTdOI/uHPBUQFzHcYlEhybJWOaM4bULxnOWeRs7ax0/s+BmC3HxrW096XcNT6Wrea2lXgq0x9CcPSbjLc+8sxTSkVoypok38iqvaHnUSQsI80IFaZWqDp+3JXEUof60k03dcaMBVBilpV4NqVhFDjqDZu03Z5hGFSYbMzxTEsk2viy4vN1PMQbpocEIndyWb7R2LQhswnRNcd77EZSWejek5A4JOjRmw8H9ep8xFZ2kBUo83SyIAYogN5ilrLFL/hQONTFuvqUSpjki0whzPA/cLg6WOGTSYiLy1d2lZ9Ba6kWcm7XzlbykjOmmPeKJ3OIbIZbgBt833L5BRlUtR2TaYyiv6flVlg55FyoWPdXWbej09dxeK06qW3JIBXcPxb5n1uMiLI5bdXikP7OozPwGqJT2ar6XSgOq03ZCKkNYNR8jWbhlJ3O4LpOL082qZNSWehFvt36Ta+Wt5l9pBqCirh/4ivBZ3ZRq1Z4VpAjVI6XU1mlZ3ahTU1blzSDHXUu9xuRVE+jnHPYPoE+/35QfP+pgf4L4pX4O6s5wDzz/isWnhIVjaDI0nerIsnFKfy3mV8pAdgZW5uO1j+IvZP3NZgvRcfqh0l/Si0p+7DZ9S2T+EKLqPkt/N7/Ui/28HdfnG1yGv+4LAcmfkvEX+3WyjCF3+us3O/5PUEoA" alt="mustard" style="height:52px;object-fit:contain;margin-bottom:28px">
+    <div class="display">From Stores<br>to <em>Screens</em></div>
+    <div class="subtitle">A staged digital growth plan to double online revenue — built on 25+ years of brand trust and 25+ physical outlets across India</div>
+    <div class="goal-pill">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#F0C040" stroke-width="1.2"/><path d="M7 4v3l2 2" stroke="#F0C040" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Target: ₹4–5L → ₹10L+/month within 6 months
+    </div>
+    <svg class="motif motif-br" viewBox="0 0 200 200" fill="none">
+      <path d="M10,10 L190,10 L190,190" stroke="#D4A017" stroke-width="0.5"/>
+      <path d="M30,10 L30,30 L10,30" stroke="#D4A017" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="60" stroke="#D4A017" stroke-width="0.3" stroke-dasharray="4 4"/>
+    </svg>
+  </div>
+
+  <!-- SLIDE 2: Industry Benchmark -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div class="stage-label">Industry Context · 2025</div>
+      <div class="section-title">Brands that started exactly where Mustard is.</div>
+    </div>
+    <div class="card-grid cols-3" style="max-width:900px">
+      <div class="card highlight">
+        <h3 style="display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--mustard);display:inline-block"></span>
+          Biba
+        </h3>
+        <div style="margin:10px 0 6px">
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Started (2012)</div>
+          <div style="font-size:13px;color:var(--text)">~250 stores, near-zero online. Strong ethnic wear brand, loyal offline base.</div>
+        </div>
+        <div style="width:100%;height:1px;background:rgba(201,162,39,0.15);margin:10px 0"></div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Today (2025)</div>
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹80–100 Cr</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">online revenue/year · ~18% of total</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-style:italic">Total revenue: ₹600–700 Cr</div>
+      </div>
+      <div class="card highlight">
+        <h3 style="display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--mustard);display:inline-block"></span>
+          Soch
+        </h3>
+        <div style="margin:10px 0 6px">
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Started</div>
+          <div style="font-size:13px;color:var(--text)">~200 stores, mainly South India. Minimal digital presence, strong regional brand.</div>
+        </div>
+        <div style="width:100%;height:1px;background:rgba(201,162,39,0.15);margin:10px 0"></div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Today (2025)</div>
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹35–55 Cr</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">online revenue/year · ~12–15% of total</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-style:italic">Total revenue: ₹300–400 Cr</div>
+      </div>
+      <div class="card highlight">
+        <h3 style="display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--mustard);display:inline-block"></span>
+          Fabindia
+        </h3>
+        <div style="margin:10px 0 6px">
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Went digital ~2014</div>
+          <div style="font-size:13px;color:var(--text)">300+ stores, iconic brand. Late to digital but accelerated fast once committed.</div>
+        </div>
+        <div style="width:100%;height:1px;background:rgba(201,162,39,0.15);margin:10px 0"></div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Today (2025)</div>
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹150–200 Cr</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">online revenue/year · ~12–15% of total</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-style:italic">Total revenue: ₹1,400–1,600 Cr</div>
+      </div>
+    </div>
+    <div class="insight" style="max-width:900px;margin-top:18px">
+      None of these brands had a digital advantage at the start. They had exactly what Mustard has — store trust, a loyal customer base, and a recognisable name. The digital revenue came from focused, staged investment over 3–5 years.
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Per-Store Benchmark -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div class="stage-label">Reality Check · Per-Store Numbers</div>
+      <div class="section-title">What does "comparable" actually mean for Mustard?</div>
+    </div>
+    <div class="split" style="max-width:900px;gap:24px">
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <h3>Industry per-store benchmarks</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px">
+            <div style="text-align:center">
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Soch</div>
+              <div style="font-size:18px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹1.5–2Cr</div>
+              <div style="font-size:10px;color:var(--text-muted)">per store/year total</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Biba</div>
+              <div style="font-size:18px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹2–2.5Cr</div>
+              <div style="font-size:10px;color:var(--text-muted)">per store/year total</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Fabindia</div>
+              <div style="font-size:18px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹4–5Cr</div>
+              <div style="font-size:10px;color:var(--text-muted)">per store/year total</div>
+            </div>
+          </div>
+        </div>
+        <div class="card highlight">
+          <h3>Mustard estimated total revenue</h3>
+          <div style="margin-top:10px">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">25 stores × ₹1.5–2Cr average =</div>
+            <div style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹37–50 Cr/year</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">estimated total across all channels</div>
+          </div>
+          <div style="width:100%;height:1px;background:rgba(201,162,39,0.15);margin:12px 0"></div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Current online share:</div>
+          <div style="font-size:20px;font-family:'Playfair Display',serif;color:var(--accent);font-weight:600">~1–2% online</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">₹4–5L/month = ₹50–60L/year</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <h3>The gap vs comparable brands</h3>
+        <div style="margin:14px 0 8px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Soch online share: 12–15%</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:8px;overflow:hidden">
+            <div style="width:13%;height:100%;background:var(--mustard);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">₹4–5 Cr/year online</div>
+        </div>
+        <div style="margin-bottom:8px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Biba online share: ~18%</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:8px;overflow:hidden">
+            <div style="width:18%;height:100%;background:var(--mustard);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">₹80–100 Cr/year online</div>
+        </div>
+        <div style="margin-bottom:8px">
+          <div style="font-size:12px;color:var(--accent);margin-bottom:6px;font-weight:500">Mustard today: ~1–2%</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:8px;overflow:hidden">
+            <div style="width:2%;height:100%;background:var(--accent);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">₹50–60L/year online</div>
+        </div>
+        <div style="margin-bottom:8px">
+          <div style="font-size:12px;color:#7EC89A;margin-bottom:6px;font-weight:500">Mustard target: 6–8%</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:8px;overflow:hidden">
+            <div style="width:7%;height:100%;background:#7EC89A;border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">₹1.2–2Cr/year online · still conservative</div>
+        </div>
+        <div class="insight" style="margin-top:8px">Getting to 6–8% online share puts Mustard in line with Soch — a brand of similar profile. That's the realistic 12-month target.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Spend Context -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div class="stage-label">Spend vs Return · What These Brands Did</div>
+      <div class="section-title">Grounded expectations on investment and timeline.</div>
+    </div>
+    <div class="card-grid cols-3" style="max-width:900px;margin-bottom:16px">
+      <div class="card">
+        <h3>Biba's digital path</h3>
+        <ul style="margin-top:8px">
+          <li>Started with ₹20–30L/year in digital marketing</li>
+          <li>Myntra + own site running in parallel</li>
+          <li>Google Shopping was their biggest early lever</li>
+          <li>Took 18–24 months to hit meaningful online share</li>
+          <li>Festival campaigns drove 40–50% of annual online revenue</li>
+        </ul>
+        <div class="impact" style="margin-top:10px">~3–4 years to ₹80Cr online</div>
+      </div>
+      <div class="card">
+        <h3>Soch's digital path</h3>
+        <ul style="margin-top:8px">
+          <li>Heavy reliance on WhatsApp for South India base</li>
+          <li>City-specific Instagram content resonated strongly</li>
+          <li>Loyalty program drove repeat buying within 12 months</li>
+          <li>Started with ₹10–15L/year digital spend</li>
+          <li>Regional language content was a differentiator</li>
+        </ul>
+        <div class="impact" style="margin-top:10px">~3 years to 12–15% online share</div>
+      </div>
+      <div class="card highlight">
+        <h3>What this means for Mustard</h3>
+        <ul style="margin-top:8px">
+          <li>₹5–10L/year in digital spend is sufficient to start</li>
+          <li>Months 1–2 need near-zero spend — leaks + offline base</li>
+          <li>Paid ads scaled only when conversion rate is proven</li>
+          <li>Festival calendar is the highest-leverage moment</li>
+          <li>Target 6–8% online share in 12 months is realistic</li>
+        </ul>
+        <div class="impact" style="margin-top:10px">₹10–15L/month online by end of year 1</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:900px">
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(201,162,39,0.12);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">₹0</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">spend needed<br>in month 1–2</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(201,162,39,0.12);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">4–8×</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">typical ROAS on<br>Google Shopping</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(201,162,39,0.12);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">3–4×</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">festival month spike<br>vs baseline</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(201,162,39,0.12);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:var(--mustard)">12 mo</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">to prove model<br>with real data</div>
+      </div>
+    </div>
+    <div class="insight" style="max-width:900px;margin-top:16px">
+      The pattern across every comparable brand is the same: offline base → digital funnel → paid ads → retention. The brands that tried to shortcut to paid ads first burned budget. Those that followed the sequence compounded fast.
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Where We Are -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div class="stage-label">Current Baseline</div>
+      <div class="section-title">Strong offline. Untapped online.</div>
+    </div>
+    <div class="split">
+      <div>
+        <div class="card highlight" style="margin-bottom:12px">
+          <h3>What's working</h3>
+          <ul>
+            <li>₹4–5L/month online — without active marketing</li>
+            <li>25+ physical outlets across India</li>
+            <li>GA4 installed, product catalog live</li>
+            <li>Good product photos, mobile-optimised site</li>
+            <li>Reviews visible on product pages</li>
+            <li>Some social media presence</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Partially in place — not active</h3>
+          <ul>
+            <li>Abandoned cart plugin installed — not actively monitored or optimised</li>
+            <li>Email + phone numbers collected at purchase — no campaigns running on them</li>
+            <li>Meta ads running — Google ads tried but not cost-effective yet</li>
+            <li>Loyalty program unclear — possibly offline only, nothing confirmed online</li>
+            <li>Offline customer base not connected to the website</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px">
+        <div>
+          <div style="font-size:42px;font-weight:700;font-family:'Playfair Display',serif;color:var(--mustard)">90%</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">of existing offline customers<br>have never shopped online</div>
+        </div>
+        <div style="width:1px;height:30px;background:rgba(212,160,23,0.2)"></div>
+        <div>
+          <div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--accent)">0</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">active funnels converting<br>traffic into repeat buyers</div>
+        </div>
+        <div class="insight" style="text-align:left">The brand is generating ₹4–5L with no active marketing. That's the signal — demand exists, the engine just isn't built yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Framework -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <div class="stage-label">Strategy Overview</div>
+      <div class="section-title">Three pillars. One compounding engine.</div>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <span class="pillar-icon">🏪</span>
+        <h3>Convert the base</h3>
+        <p>Move existing offline customers online. The most trusted, highest-converting audience you'll ever reach — and they're already yours.</p>
+        <div style="margin-top:14px;font-size:11px;color:rgba(212,160,23,0.6);letter-spacing:1px">MONTHS 1–2</div>
+      </div>
+      <div class="pillar" style="border-color:rgba(212,160,23,0.25);background:rgba(212,160,23,0.04)">
+        <span class="pillar-icon">📈</span>
+        <h3>Capture new demand</h3>
+        <p>SEO, Google Shopping, and paid social — reaching buyers who are actively searching for ethnic wear, especially around India's festival calendar.</p>
+        <div style="margin-top:14px;font-size:11px;color:rgba(212,160,23,0.6);letter-spacing:1px">MONTHS 2–4</div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon">♻️</span>
+        <h3>Retain and grow</h3>
+        <p>Loyalty, email, WhatsApp, referrals. Turn one-time buyers into a predictable recurring revenue base. The flywheel that compounds.</p>
+        <div style="margin-top:14px;font-size:11px;color:rgba(212,160,23,0.6);letter-spacing:1px">MONTHS 4–6+</div>
+      </div>
+    </div>
+    <div class="insight" style="max-width:860px;margin-top:20px">Each stage builds on the last. No wasted spend — every rupee goes in only after the previous layer is converting.</div>
+  </div>
+
+  <!-- SLIDE 7: Stage 1 - Days 1-7 -->
+  <div class="slide" id="slide-7">
+    <div class="slide-header">
+      <div class="stage-label">Days 1–7 · Foundations</div>
+      <div class="section-title">Zero spend. Maximum signal.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>Full GA4 funnel audit</strong><span>Find top exit pages, best-performing products, current conversion rate and average order value</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>Heatmap setup (Hotjar free)</strong><span>Homepage + top 3 product pages — see exactly where users drop off</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>Identify top 20 products</strong><span>By revenue — all early optimization effort focuses here first, not the full catalog</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>Abandoned cart audit</strong><span>Is recovery even set up? If not, this is the single highest-ROI fix on the site</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>Install GTM + Meta Pixel</strong><span>No ads yet — just data collection. Pixel needs 60–90 days of data before retargeting works well</span></div></li>
+    </ul>
+    <div class="insight" style="max-width:860px;margin-top:16px">Amazon and Myntra obsess over funnel data before adding traffic. Find where money is leaking before spending a rupee on ads.</div>
+  </div>
+
+  <!-- SLIDE 8: Stage 2 - Week 1-2 -->
+  <div class="slide" id="slide-8">
+    <div class="slide-header">
+      <div class="stage-label">Week 1–2 · Plug the Leaks</div>
+      <div class="section-title">Revenue from traffic you already have.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>Abandoned cart recovery</strong><span>3-email sequence: 1hr / 24hr / 72hr + WhatsApp message. Typical 8–15% recovery rate</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>Top 20 product page rewrite</strong><span>AI-optimised titles, descriptions, size guides. Better sequencing of images (lifestyle → detail → fabric)</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>Post-purchase review email</strong><span>Auto-triggered 3 days after delivery. More reviews = higher conversion on product pages</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>Upsell widgets</strong><span>"Complete the look" + "Customers also bought" on product pages. WooCommerce plugin, 15-min setup</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>Site speed check</strong><span>Images optimised, lazy loading on. Every 1-second delay = 7% drop in conversions (Google data)</span></div></li>
+    </ul>
+    <div class="impact">Expected impact: +₹40,000–80,000/month from existing traffic alone</div>
+    <div class="insight" style="max-width:860px;margin-top:10px">Zara A/B tests every product page element. We apply the same discipline — more revenue from the same visitors, before spending on ads.</div>
+  </div>
+
+  <!-- SLIDE 9: Stage 3 - Week 3-4 -->
+  <div class="slide" id="slide-9">
+    <div class="slide-header">
+      <div class="stage-label">Week 3–4 · The Offline Goldmine</div>
+      <div class="section-title">Your biggest asset is inside your stores.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>WhatsApp broadcast to existing customers</strong><span>"Shop online, get 10% extra." Use phone numbers from billing. Single blast often outperforms 3 months of cold ads</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>QR code cards in every carry bag</strong><span>All 25 outlets. Links to site with exclusive online coupon. Print cost under ₹2,000 total</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>Staff briefing at billing counters</strong><span>Mention the website. Small incentive per verified online referral. Converts walk-ins into digital customers</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>Google Merchant Center setup</strong><span>Free product listings on Google Shopping. Takes 3–5 days approval. Zero cost, immediate visibility</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>City landing pages</strong><span>"Ethnic wear in [City]" — one per major outlet city. Local SEO that drives both online orders and store footfall</span></div></li>
+    </ul>
+    <div class="impact">Expected impact: +₹60,000–1,20,000/month from offline base conversion</div>
+    <div class="insight" style="max-width:860px;margin-top:10px">Reliance Trends uses store footfall as a retargeting list. With 25 stores, Mustard has the same leverage at a fraction of the cost.</div>
+  </div>
+
+  <!-- SLIDE 10: Stage 4 - Month 2 -->
+  <div class="slide" id="slide-10">
+    <div class="slide-header">
+      <div class="stage-label">Month 2 · Turn on Paid Traffic</div>
+      <div class="section-title">Spend only on audiences ready to buy.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>Google Shopping ads — ₹300–500/day</strong><span>Festival + occasion-wear keywords. Ethnic wear ROAS typically 4–8x early on. Scale with data</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>Instagram Reels — 3/week</strong><span>AI-scripted, shot in-store or flat lays. Scheduled via Buffer. Reels reach 4x more than static posts</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>Email list building</strong><span>Exit-intent popup: 10% off first order. Mailchimp/Klaviyo. Email list is a zero-cost recurring asset</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>SEO blog launch — 2 posts/month</strong><span>"Best lehenga for wedding season 2025", "Diwali outfit guide by city". AI-drafted, compounds over months</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>Branded search protection ads</strong><span>Cheap, high-intent. Ensure Mustard shows up #1 when someone Googles the brand name</span></div></li>
+    </ul>
+    <div class="impact">Expected impact: ₹1–1.5L incremental monthly revenue from paid channels</div>
+    <div class="insight" style="max-width:860px;margin-top:10px">Meesho and Nykaa Fashion pour budget in 6 weeks before each Indian festival peak. We plan campaigns 8 weeks ahead of every major occasion.</div>
+  </div>
+
+  <!-- SLIDE 11: Stage 5 - Month 3-4 -->
+  <div class="slide" id="slide-11">
+    <div class="slide-header">
+      <div class="stage-label">Month 3–4 · Retargeting + Seasonal Machine</div>
+      <div class="section-title">Warm audiences convert 4–6× cheaper than cold.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>Meta catalog retargeting ads</strong><span>Show visitors the exact products they viewed. Pixel now has 60–90 days of data — this is when it gets powerful</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>Lookalike audiences from top buyers</strong><span>Build from customers with purchase value > ₹2,000. Meta finds similar profiles across India</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>Seasonal campaign calendar — 8 weeks ahead</strong><span>Navratri, Dussehra, Diwali, Eid, wedding season, summer. Content + ad budget locked before each peak</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>City-specific creatives</strong><span>Lucknow → chikankari. Jaipur → bandhani. Hyderabad → Kalamkari. Regional relevance lifts CTR significantly</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>Influencer seeding — 5–10 micro-influencers</strong><span>10K–100K followers, ethnic wear niche, tier 1 + tier 2 cities. Barter or small fee. Trust-based audiences</span></div></li>
+    </ul>
+    <div class="impact">Expected impact: ₹2–3L/month from paid + organic combined</div>
+    <div class="insight" style="max-width:860px;margin-top:10px">Fabindia runs city-specific retargeting showing regional styles to regional audiences. A Lucknow customer sees chikankari; a Jaipur customer sees bandhani.</div>
+  </div>
+
+  <!-- SLIDE 12: Stage 6 - Month 5-6 -->
+  <div class="slide" id="slide-12">
+    <div class="slide-header">
+      <div class="stage-label">Month 5–6 · Loyalty + Retention Engine</div>
+      <div class="section-title">The cheapest customer is one you already have.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>Loyalty points program</strong><span>Earn online, redeem online or in-store. Bridges both channels. WooCommerce plugin, seamless setup</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>Birthday and anniversary campaigns</strong><span>Auto-triggered coupon 7 days before. High open rate, warm sentiment. Collect at email signup</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>"Refer a friend" program</strong><span>₹200 off for referrer + referee. Tracked via WooCommerce coupon codes. Zero ad cost per acquisition</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>VIP early access tier</strong><span>Customers with 2+ purchases get first look at new arrivals. Creates urgency and rewards loyalty</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>WhatsApp customer community</strong><span>Private group for top buyers — first looks, styling polls, exclusive offers. Highest-engagement channel in India</span></div></li>
+    </ul>
+    <div class="impact">Target: repeat purchase rate from ~15% → 35%+ over 6 months</div>
+    <div class="insight" style="max-width:860px;margin-top:10px">Tanishq's loyalty program drives 60%+ revenue from repeat buyers. Manyavar CRM campaigns recover 20–25% of lapsed customers. Same playbook, built for Mustard.</div>
+  </div>
+
+  <!-- SLIDE 13: Year 1+ Brand Moat -->
+  <div class="slide" id="slide-13">
+    <div class="slide-header">
+      <div class="stage-label">Year 1+ · Brand Moat</div>
+      <div class="section-title">Build what competitors cannot buy.</div>
+    </div>
+    <ul class="task-list" style="grid-template-columns:1fr 1fr">
+      <li><div class="task-num">1</div><div class="task-text"><strong>UGC engine</strong><span>Incentivise customers to post wearing the product with a branded hashtag. Repost on brand page. Best social proof possible</span></div></li>
+      <li><div class="task-num">2</div><div class="task-text"><strong>City micro-influencer program</strong><span>2–3 ongoing creators per city. Monthly content. Regional reach that national brands can't replicate</span></div></li>
+      <li><div class="task-num">3</div><div class="task-text"><strong>YouTube Shorts — styling and occasion guides</strong><span>Long shelf-life content. "5 ways to style a kurta for Diwali" keeps getting views for years</span></div></li>
+      <li><div class="task-num">4</div><div class="task-text"><strong>Vernacular content</strong><span>Hindi + regional language captions and videos for tier 2 city audiences. Massive underserved market in ethnic wear</span></div></li>
+      <li><div class="task-num">5</div><div class="task-text"><strong>WhatsApp catalogue</strong><span>Product catalog directly in WhatsApp for share-to-buy. Huge in India — no app install required</span></div></li>
+    </ul>
+    <div class="insight" style="max-width:860px;margin-top:14px">Manyavar, Soch, and W Clothing built online dominance through consistent brand storytelling tied to Indian occasions — not just ads. That's the moat we build here.</div>
+  </div>
+
+  <!-- SLIDE 14: Revenue Projection -->
+  <div class="slide" id="slide-14">
+    <div class="slide-header">
+      <div class="stage-label">Revenue Projection</div>
+      <div class="section-title">Conservative targets. Festival peaks not included.</div>
+    </div>
+    <div style="width:100%;max-width:860px;position:relative">
+      <style>
+        @keyframes drawCurve {
+          from { stroke-dashoffset: 900; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes fadeInDot {
+          from { opacity: 0; transform: scale(0); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeInFill {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        #curvePath {
+          stroke-dasharray: 900;
+          stroke-dashoffset: 900;
+          animation: drawCurve 2s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+        }
+        #fillArea {
+          opacity: 0;
+          animation: fadeInFill 1s ease 1.5s forwards;
+        }
+        .rev-dot {
+          opacity: 0;
+          transform-origin: center;
+          transform-box: fill-box;
+        }
+        .rev-dot:nth-child(1) { animation: fadeInDot 0.3s ease 0.4s forwards; }
+        .rev-dot:nth-child(2) { animation: fadeInDot 0.3s ease 0.7s forwards; }
+        .rev-dot:nth-child(3) { animation: fadeInDot 0.3s ease 1.0s forwards; }
+        .rev-dot:nth-child(4) { animation: fadeInDot 0.3s ease 1.3s forwards; }
+        .rev-dot:nth-child(5) { animation: fadeInDot 0.3s ease 1.6s forwards; }
+        .rev-dot:nth-child(6) { animation: fadeInDot 0.4s ease 1.9s forwards; }
+        .rev-label {
+          opacity: 0;
+          animation: fadeInFill 0.4s ease 2s forwards;
+        }
+      </style>
+      <svg viewBox="0 0 860 240" width="100%" style="overflow:visible">
+        <defs>
+          <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#C9A227" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#E0B840" stop-opacity="1"/>
+          </linearGradient>
+          <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C9A227" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#C9A227" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="glow2">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Axes -->
+        <line x1="60" y1="20" x2="60" y2="205" stroke="rgba(201,162,39,0.15)" stroke-width="1"/>
+        <line x1="60" y1="205" x2="845" y2="205" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+
+        <!-- Grid lines -->
+        <line x1="60" y1="160" x2="845" y2="160" stroke="rgba(201,162,39,0.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="60" y1="115" x2="845" y2="115" stroke="rgba(201,162,39,0.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="60" y1="70"  x2="845" y2="70"  stroke="rgba(201,162,39,0.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="60" y1="25"  x2="845" y2="25"  stroke="rgba(201,162,39,0.05)" stroke-width="1" stroke-dasharray="4 4"/>
+
+        <!-- Y axis labels -->
+        <text x="52" y="209" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">0</text>
+        <text x="52" y="164" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">5L</text>
+        <text x="52" y="119" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">10L</text>
+        <text x="52" y="74"  text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">15L</text>
+        <text x="52" y="29"  text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">20L+</text>
+
+        <!-- Fill area (fades in after curve draws) -->
+        <!-- y scale: 205=0L, 160=5L, 115=10L, 70=15L, 25=20L  → 9px per L
+             Today=4.5L→y=164, M1=6.5L→y=146, M2=8L→y=133, M3=10.5L→y=111, M5=13.5L→y=84, Y1=22L→y=7 -->
+        <path id="fillArea"
+          d="M 120,164 C 175,158 225,150 264,146 C 320,140 365,136 408,133 C 460,126 505,118 552,111 C 600,103 645,90 696,84 C 735,78 765,42 810,7 L 810,205 L 120,205 Z"
+          fill="url(#fillGrad)"/>
+
+        <!-- Main curve — CSS animated via stroke-dasharray -->
+        <path id="curvePath"
+          d="M 120,164 C 175,158 225,150 264,146 C 320,140 365,136 408,133 C 460,126 505,118 552,111 C 600,103 645,90 696,84 C 735,78 765,42 810,7"
+          fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round" filter="url(#glow2)"/>
+
+        <!-- Dots (staggered fade in) -->
+        <g id="revDots">
+          <circle class="rev-dot" cx="120" cy="164" r="4" fill="#C9A227" opacity="0.5"/>
+          <circle class="rev-dot" cx="264" cy="146" r="4" fill="#C9A227" opacity="0.7"/>
+          <circle class="rev-dot" cx="408" cy="133" r="5" fill="#C9A227"/>
+          <circle class="rev-dot" cx="552" cy="111" r="5" fill="#C9A227"/>
+          <circle class="rev-dot" cx="696" cy="84"  r="5" fill="#C9A227"/>
+          <circle class="rev-dot" cx="810" cy="7"   r="6" fill="#E0B840" filter="url(#glow2)"/>
+        </g>
+
+        <!-- Value labels (fade in together at end) -->
+        <g class="rev-label">
+          <text x="120" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.75)">₹4–5L</text>
+          <text x="264" y="137" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.85)">₹6–7L</text>
+          <text x="408" y="124" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(201,162,39,0.9)">₹7–9L</text>
+          <text x="552" y="102" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#C9A227" font-weight="500">₹9–12L</text>
+          <text x="696" y="75"  text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#C9A227" font-weight="500">₹12–15L</text>
+          <text x="810" y="0"   text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#E0B840" font-weight="600">₹20L+</text>
+        </g>
+
+        <!-- X axis labels (always visible, no animation) -->
+        <text x="120" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Today</text>
+        <text x="264" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Month 1</text>
+        <text x="408" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Month 2</text>
+        <text x="552" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Month 3–4</text>
+        <text x="696" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Month 5–6</text>
+        <text x="810" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="rgba(184,168,138,0.5)">Year 1+</text>
+      </svg>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);max-width:860px;margin-top:2px">* Conservative baseline. A strong Diwali or wedding season campaign can spike 3–4× in a single month.</div>
+    <div class="card-grid cols-3" style="margin-top:20px;max-width:860px">
+      <div class="card highlight">
+        <h3>Month 1 driver</h3>
+        <p>Leaks plugged + offline base activated via WhatsApp. No ad spend required.</p>
+      </div>
+      <div class="card highlight">
+        <h3>Month 2–4 driver</h3>
+        <p>Google Shopping + retargeting live. Festival season campaigns planned ahead.</p>
+      </div>
+      <div class="card highlight">
+        <h3>Month 5–6 driver</h3>
+        <p>Retention flywheel running. Repeat buyers reduce cost-per-order significantly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: AI-Powered Work -->
+  <div class="slide" id="slide-15">
+    <div class="slide-header">
+      <div class="stage-label">How This Gets Done · AI as the Engine</div>
+      <div class="section-title">Full visibility into what AI does — and what still needs a human.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;width:100%;max-width:920px">
+
+      <div class="card">
+        <h3 style="color:#7EC89A">✦ Fully AI-handled</h3>
+        <ul style="margin-top:10px">
+          <li><strong style="color:var(--text);font-weight:500">Product descriptions</strong><span style="display:block;font-size:11px;color:var(--text-muted)">All 500+ SKUs rewritten for SEO — batch processed, reviewed once</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Blog content</strong><span style="display:block;font-size:11px;color:var(--text-muted)">"Best lehenga for Diwali 2025" type posts — drafted in minutes, light edit before publish</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Email sequences</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Abandoned cart, post-purchase, birthday — written and set up once, runs forever</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">WhatsApp broadcast copy</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Festive announcements, new arrivals, sale alerts — tone-matched to brand voice</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Ad copy variants</strong><span style="display:block;font-size:11px;color:var(--text-muted)">10–15 headline and description variants per campaign for A/B testing</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Instagram caption batches</strong><span style="display:block;font-size:11px;color:var(--text-muted)">4 weeks of captions + hashtag sets generated in one session</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Monthly analytics report</strong><span style="display:block;font-size:11px;color:var(--text-muted)">GA4 data interpreted into plain language — what worked, what didn't, what's next</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--mustard)">◈ AI drafts, we refine together</h3>
+        <ul style="margin-top:10px">
+          <li><strong style="color:var(--text);font-weight:500">Reels scripts</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI writes the hook, structure and CTA — store team shoots, we review for brand fit</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Seasonal campaign strategy</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI generates the brief, angles and copy — we validate timing, offers, business logic</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Influencer outreach messages</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI drafts personalised pitches — we check tone and relationship context before sending</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Google Shopping feed optimisation</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI rewrites product titles for search intent — we verify category accuracy</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">City landing page content</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI generates local SEO copy for each city — we add store-specific details</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Customer segmentation logic</strong><span style="display:block;font-size:11px;color:var(--text-muted)">AI suggests segments from purchase data — we decide which get which campaigns</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--accent)">◉ Human-only</h3>
+        <ul style="margin-top:10px">
+          <li><strong style="color:var(--text);font-weight:500">Ad spend decisions</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Where to increase budget, what to pause — judgment call based on ROAS data</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Brand voice sign-off</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Anything customer-facing gets a final read to ensure it sounds like Mustard</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Influencer selection</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Shortlisting, vetting audience quality, negotiating — AI can research but not judge</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Photography direction</strong><span style="display:block;font-size:11px;color:var(--text-muted)">What to shoot, how to style it — needs a person at the store with the product</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Pricing + offer decisions</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Discount depth, bundle logic, exclusivity — business calls the brand owns</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Relationship management</strong><span style="display:block;font-size:11px;color:var(--text-muted)">Store staff, partners, influencers, press — trust and context that only humans carry</span></li>
+          <li style="margin-top:8px"><strong style="color:var(--text);font-weight:500">Strategy pivots</strong><span style="display:block;font-size:11px;color:var(--text-muted)">When something isn't working, the call on what to change requires judgment, not automation</span></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="insight" style="max-width:920px;margin-top:16px">
+      AI handles the volume work — the writing, the variations, the reporting. That's what used to require a 4-person agency team. The strategy, the judgment calls, and the brand decisions are made together. This is how two people can run what an agency charges 10× more to deliver.
+    </div>
+  </div>
+
+  <!-- SLIDE 16: 30-Day Quick Wins -->
+  <div class="slide" id="slide-16">
+    <div class="slide-header">
+      <div class="stage-label">30-Day Proof of Concept</div>
+      <div class="section-title">What visible change looks like in 30 days.</div>
+    </div>
+    <div class="card-grid cols-2" style="max-width:860px">
+      <div class="card highlight">
+        <h3>Week 1</h3>
+        <ul>
+          <li>GA4 audit complete — funnel leaks identified</li>
+          <li>Abandoned cart recovery live and recovering orders</li>
+          <li>Top 20 product pages rewritten and published</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h3>Week 2</h3>
+        <ul>
+          <li>Meta Pixel collecting data across site</li>
+          <li>Post-purchase review emails triggering</li>
+          <li>Upsell widgets live on product pages</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h3>Week 3</h3>
+        <ul>
+          <li>WhatsApp blast sent to offline customer base</li>
+          <li>First online orders from store customers visible</li>
+          <li>QR cards in carry bags across all outlets</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h3>Week 4</h3>
+        <ul>
+          <li>Google Merchant Center live with free listings</li>
+          <li>First Instagram Reels published and scheduled</li>
+          <li>GA4 dashboard showing clean conversion funnel</li>
+        </ul>
+      </div>
+    </div>
+    <div class="insight" style="max-width:860px;margin-top:18px">30 days is enough to show the engine is turning. 90 days is enough to prove the revenue impact with real numbers.</div>
+  </div>
+
+  <!-- SLIDE 17: Closing -->
+  <div class="slide" id="slide-17">
+    <svg class="motif motif-tl" viewBox="0 0 200 200" fill="none">
+      <path d="M10,10 L190,10 L190,190" stroke="#D4A017" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="60" stroke="#D4A017" stroke-width="0.3" stroke-dasharray="4 4"/>
+      <circle cx="100" cy="100" r="30" stroke="#D4A017" stroke-width="0.2" stroke-dasharray="2 4"/>
+    </svg>
+    <img src="data:image/webp;base64,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" alt="mustard" style="height:38px;object-fit:contain;margin-bottom:16px">
+    <div class="big-quote">"The brand trust is already built.<br>The customer base already exists.<br>The only thing missing is the <em>digital bridge</em> —<br>and that's what this plan builds."</div>
+    <div style="margin-top:28px;font-size:13px;color:var(--text-muted)">Start with 30 days. Prove the model. Then scale.</div>
+    <div style="display:flex;gap:32px;margin-top:32px">
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--mustard);font-weight:700">25+</div>
+        <div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">outlets</div>
+      </div>
+      <div style="width:1px;background:rgba(212,160,23,0.2)"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--mustard);font-weight:700">2×</div>
+        <div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">revenue target</div>
+      </div>
+      <div style="width:1px;background:rgba(212,160,23,0.2)"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:32px;color:var(--mustard);font-weight:700">6</div>
+        <div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">months</div>
+      </div>
+    </div>
+    <svg class="motif motif-br" viewBox="0 0 200 200" fill="none">
+      <path d="M10,10 L190,10 L190,190" stroke="#D4A017" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="60" stroke="#D4A017" stroke-width="0.3" stroke-dasharray="4 4"/>
+    </svg>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div id="nav">
+  <button id="prevBtn" onclick="changeSlide(-1)" disabled>&#8592;</button>
+  <div class="dot-nav" id="dots"></div>
+  <span id="slide-counter">01 / 14</span>
+  <button id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const dotsContainer = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsContainer.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    setTimeout(() => slides[current - (current === n ? 0 : (n > current ? -1 : 1))].classList.remove('exit'), 400);
+
+    const prev = current;
+    slides[prev].classList.remove('active');
+    setTimeout(() => slides[prev].classList.remove('exit'), 350);
+
+    current = n;
+    slides[current].classList.add('active');
+
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    document.getElementById('slide-counter').textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+  }
+
+  function changeSlide(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < total) goTo(next);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+</script>
+
+</body>
+</html>
