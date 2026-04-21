@@ -3,1029 +3,452 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mustard Fashion — Website Analytics Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Mustard Fashion — Analytics Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root {
-    --gold: #C9A227;
-    --gold-light: #E8C048;
-    --gold-pale: rgba(201,162,39,0.08);
-    --deep: #0E0B04;
-    --surface: #161209;
-    --card: #1C1710;
-    --card2: #221E12;
-    --border: rgba(201,162,39,0.14);
-    --border-strong: rgba(201,162,39,0.3);
-    --text: #F0E8D0;
-    --muted: #9A8E72;
-    --muted2: #6B6150;
-    --red: #E05252;
-    --red-bg: rgba(224,82,82,0.08);
-    --red-border: rgba(224,82,82,0.25);
-    --amber: #E07B39;
-    --amber-bg: rgba(224,123,57,0.08);
-    --amber-border: rgba(224,123,57,0.25);
-    --green: #52A870;
-    --green-bg: rgba(82,168,112,0.08);
-    --green-border: rgba(82,168,112,0.25);
-    --blue: #5B9BD5;
-    --blue-bg: rgba(91,155,213,0.08);
-  }
+:root{
+  --gold:#C9A227;--gold-d:#9E7D1A;--gold-bg:#FDF8EC;--gold-bd:#EAD68A;
+  --cream:#FDFAF4;--white:#FFFFFF;--ink:#1A1508;--ink2:#3D3520;
+  --muted:#7A6E55;--muted2:#A89E85;--bd:#E8E0CC;--bd2:#F0EAD8;
+  --red:#C0392B;--red-bg:#FEF5F4;--red-bd:#F5C6C2;
+  --amb:#D4681A;--amb-bg:#FEF7F0;--amb-bd:#F5D4B2;
+  --grn:#2E7D52;--grn-bg:#F2FAF5;--grn-bd:#A8D8BC;
+  --blu:#2563A8;--blu-bg:#F0F6FF;--blu-bd:#BAD0F0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.7;}
+header{background:var(--white);border-bottom:1px solid var(--bd);padding:16px 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.hd-l{display:flex;align-items:center;gap:18px;}
+.logo{height:32px;object-fit:contain;}
+.hsep{width:1px;height:22px;background:var(--bd);}
+.htitle{font-size:12px;color:var(--muted);}
+.period{font-size:11px;color:var(--gold-d);background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:20px;padding:4px 14px;font-weight:500;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 40px 80px;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* Hero */
+.hero{padding:44px 0 36px;border-bottom:1px solid var(--bd2);margin-bottom:40px;}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--gold);font-weight:500;margin-bottom:10px;}
+h1{font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:10px;}
+h1 em{color:var(--gold);font-style:italic;font-weight:500;}
+.hero-p{font-size:14px;color:var(--muted);max-width:560px;line-height:1.7;}
 
-  body {
-    background: var(--deep);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    line-height: 1.7;
-  }
+/* ── Overview scorecard row ── */
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:48px;}
+.sc{background:var(--white);padding:18px 16px;position:relative;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.sc-g::before{background:var(--gold)}.sc-r::before{background:var(--red)}.sc-a::before{background:var(--amb)}.sc-gr::before{background:var(--grn)}
+.sc-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:5px;}
+.sc-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1;margin-bottom:4px;}
+.sc-val.r{color:var(--red)}.sc-val.a{color:var(--amb)}.sc-val.g{color:var(--grn)}.sc-val.o{color:var(--gold-d)}
+.sc-note{font-size:11px;color:var(--muted);line-height:1.5;}
 
-  /* ── Layout ── */
-  .page-wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px 80px; }
+/* ── Section ── */
+.section{margin-bottom:52px;}
+.sec-hd{display:flex;align-items:flex-start;gap:14px;padding-bottom:14px;border-bottom:2px solid var(--gold-bg);margin-bottom:24px;}
+.sec-num{width:28px;height:28px;border-radius:50%;background:var(--gold-bg);border:1.5px solid var(--gold-bd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--gold-d);flex-shrink:0;margin-top:2px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);}
+.sec-sub{font-size:12px;color:var(--muted);margin-top:3px;}
 
-  /* ── Header ── */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 28px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-  .header-left { display: flex; align-items: center; gap: 20px; }
-  .brand-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--gold);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-  .header-divider { width: 1px; height: 28px; background: var(--border-strong); }
-  .report-title { font-size: 13px; color: var(--muted); letter-spacing: 0.5px; }
-  .report-period {
-    font-size: 11px;
-    color: var(--muted2);
-    background: var(--gold-pale);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-    white-space: nowrap;
-  }
+/* ── Chart grid ── */
+.chart-grid{display:grid;gap:16px;margin-bottom:0;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:1fr 1fr 1fr;}
+.g12{grid-template-columns:1.4fr 1fr;}
+.g21{grid-template-columns:1fr 1.4fr;}
 
-  /* ── Hero metrics ── */
-  .hero { padding: 48px 0 40px; }
-  .hero-label {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .hero-heading {
-    font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.2;
-    margin-bottom: 12px;
-  }
-  .hero-heading em { color: var(--gold); font-style: italic; font-weight: 400; }
-  .hero-sub { font-size: 14px; color: var(--muted); max-width: 640px; line-height: 1.7; }
+/* ── Chart card ── */
+.ccard{background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:22px 24px;}
+.ccard-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.ccard-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
+.chart-wrap{position:relative;}
 
-  /* ── Stat row ── */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin: 32px 0 48px;
-  }
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .stat-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
-  .stat-card.s-neutral::after { background: var(--gold); }
-  .stat-card.s-red::after { background: var(--red); }
-  .stat-card.s-amber::after { background: var(--amber); }
-  .stat-card.s-green::after { background: var(--green); }
-  .stat-card.s-blue::after { background: var(--blue); }
-  .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 6px; }
-  .stat-value { font-size: 26px; font-family: 'Playfair Display', serif; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 4px; }
-  .stat-value.v-red { color: var(--red); }
-  .stat-value.v-amber { color: var(--amber); }
-  .stat-value.v-green { color: var(--green); }
-  .stat-note { font-size: 10px; color: var(--muted2); line-height: 1.4; }
+/* ── Impact cards (after charts) ── */
+.impact-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;}
+.imp{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:16px 18px;border-left:4px solid var(--gold);}
+.imp.r{border-left-color:var(--red);}
+.imp.a{border-left-color:var(--amb);}
+.imp.g{border-left-color:var(--grn);}
+.imp-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--gold-d);line-height:1;}
+.imp-num.r{color:var(--red)}.imp-num.a{color:var(--amb)}.imp-num.g{color:var(--grn)}
+.imp-label{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
 
-  /* ── Section ── */
-  .section { margin-bottom: 56px; }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-num {
-    width: 28px; height: 28px;
-    background: var(--gold-pale);
-    border: 1px solid var(--border-strong);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 600; color: var(--gold);
-    flex-shrink: 0;
-  }
-  .section-title-wrap {}
-  .section-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--text); }
-  .section-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+/* ── Revenue projection chart ── */
+.rev-section{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:12px;padding:28px 32px;margin-bottom:48px;}
+.rev-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.rev-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
 
-  /* ── Finding card ── */
-  .finding {
-    background: var(--card);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-  }
-  .finding-head {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px 22px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .finding-head:hover { background: rgba(255,255,255,0.02); }
+/* ── Action cards ── */
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px;}
+.ac{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px 16px;position:relative;overflow:hidden;}
+.ac::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.a1::before{background:var(--red)}.a2::before{background:var(--amb)}.a3::before{background:var(--gold)}.a4::before{background:var(--grn)}
+.ac-when{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:5px;}
+.ac-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:12px;}
+.ac-list{list-style:none;}
+.ac-list li{font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--bd2);display:flex;gap:6px;align-items:flex-start;}
+.ac-list li::before{content:'→';color:var(--gold);flex-shrink:0;font-size:11px;margin-top:1px;}
+.ac-list li:last-child{border:none;}
 
-  .severity {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 6px;
-  }
-  .sev-red { background: var(--red); box-shadow: 0 0 8px rgba(224,82,82,0.4); }
-  .sev-amber { background: var(--amber); box-shadow: 0 0 8px rgba(224,123,57,0.4); }
-  .sev-green { background: var(--green); box-shadow: 0 0 6px rgba(82,168,112,0.3); }
+/* ── Summary banner ── */
+.sbanner{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:10px;padding:20px 24px;margin-top:20px;display:flex;gap:16px;align-items:flex-start;}
+.sb-icon{font-size:20px;color:var(--gold);flex-shrink:0;}
+.sb-t{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.sb-d{font-size:13px;color:var(--muted);line-height:1.7;}
 
-  .finding-title-col { flex: 1; }
-  .finding-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-  .finding-sub { font-size: 12px; color: var(--muted); }
+/* ── Funnel ── */
+.funnel-wrap{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
+.f-row{display:flex;align-items:center;gap:12px;}
+.f-bar{height:36px;border-radius:5px;display:flex;align-items:center;padding:0 14px;font-size:12px;font-weight:500;color:var(--white);flex-shrink:0;min-width:100px;transition:width .6s;}
+.f-meta{font-size:11px;color:var(--muted);}
+.f-drop{font-size:10px;color:var(--red);font-weight:500;}
 
-  .impact-pill {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 12px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .ip-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
-  .ip-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
-  .ip-green { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
-  .ip-blue { background: var(--blue-bg); border: 1px solid rgba(91,155,213,0.3); color: var(--blue); }
-
-  .chevron {
-    width: 18px; height: 18px;
-    color: var(--muted2);
-    transition: transform 0.25s;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .finding.open .chevron { transform: rotate(90deg); }
-
-  .finding-body {
-    display: none;
-    padding: 0 22px 20px 46px;
-    border-top: 1px solid var(--border);
-  }
-  .finding.open .finding-body { display: block; }
-
-  .data-block {
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin: 14px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  .data-point { }
-  .dp-val { font-size: 22px; font-family: 'Playfair Display', serif; font-weight: 600; }
-  .dp-val.dv-red { color: var(--red); }
-  .dp-val.dv-amber { color: var(--amber); }
-  .dp-val.dv-green { color: var(--green); }
-  .dp-val.dv-gold { color: var(--gold); }
-  .dp-label { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
-  .finding-body p { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 10px 0; }
-  .finding-body p strong { color: var(--text); font-weight: 500; }
-  .finding-body p em { color: var(--gold); font-style: normal; }
-
-  /* ── Action items ── */
-  .actions { margin-top: 16px; }
-  .actions-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted2); margin-bottom: 10px; }
-  .action-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .action-item:last-child { border-bottom: none; }
-  .action-phase {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .ph-now { background: rgba(224,82,82,0.15); color: var(--red); border: 1px solid var(--red-border); }
-  .ph-week { background: rgba(224,123,57,0.15); color: var(--amber); border: 1px solid var(--amber-border); }
-  .ph-month { background: rgba(82,168,112,0.12); color: var(--green); border: 1px solid var(--green-border); }
-  .ph-later { background: rgba(91,155,213,0.1); color: var(--blue); border: 1px solid rgba(91,155,213,0.25); }
-
-  .action-text { font-size: 13px; color: var(--text); line-height: 1.5; }
-  .action-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-  /* ── Bar chart ── */
-  .bar-chart { margin: 16px 0; }
-  .bar-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .bar-label { font-size: 11px; color: var(--muted); width: 140px; flex-shrink: 0; text-align: right; }
-  .bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 3px; }
-  .bar-val { font-size: 11px; color: var(--muted); width: 60px; flex-shrink: 0; }
-
-  /* ── Phase roadmap ── */
-  .phase-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-top: 24px;
-  }
-  .phase-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 16px;
-    position: relative;
-  }
-  .phase-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 12px 12px 0 0;
-  }
-  .pc-1::before { background: var(--red); }
-  .pc-2::before { background: var(--amber); }
-  .pc-3::before { background: var(--gold); }
-  .pc-4::before { background: var(--green); }
-  .phase-period { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted2); margin-bottom: 6px; }
-  .phase-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 12px; }
-  .phase-items { list-style: none; }
-  .phase-items li {
-    font-size: 12px;
-    color: var(--muted);
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    display: flex;
-    gap: 6px;
-  }
-  .phase-items li::before { content: '→'; color: var(--gold-light); opacity: 0.5; flex-shrink: 0; }
-  .phase-items li:last-child { border: none; }
-
-  /* ── Search tags ── */
-  .tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
-  .tag {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 12px;
-    background: var(--gold-pale);
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
-  .tag.t-hot { background: rgba(224,82,82,0.08); border-color: var(--red-border); color: #E08888; }
-  .tag.t-warm { background: var(--amber-bg); border-color: var(--amber-border); color: #C89060; }
-  .tag.t-gap { background: rgba(91,155,213,0.08); border-color: rgba(91,155,213,0.25); color: #7AAAD0; }
-
-  /* ── Funnel viz ── */
-  .funnel { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; max-width: 480px; }
-  .funnel-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .funnel-bar {
-    height: 32px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--deep);
-    flex-shrink: 0;
-    min-width: 80px;
-  }
-  .funnel-meta { font-size: 11px; color: var(--muted); }
-  .funnel-drop { font-size: 10px; color: var(--red); }
-
-  /* ── Divider ── */
-  .divider { height: 1px; background: var(--border); margin: 48px 0; }
-
-  /* ── Footer ── */
-  footer {
-    text-align: center;
-    padding: 32px;
-    font-size: 11px;
-    color: var(--muted2);
-    border-top: 1px solid var(--border);
-    letter-spacing: 0.5px;
-  }
+/* ── Divider ── */
+hr{border:none;border-top:1px solid var(--bd);margin:44px 0;}
+footer{text-align:center;padding:24px 40px;font-size:11px;color:var(--muted2);border-top:1px solid var(--bd);background:var(--white);}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <div class="brand-name">Mustard</div>
-    <div class="header-divider"></div>
-    <div class="report-title">Website Analytics Report · GA4</div>
+  <div class="hd-l">
+    <img src="data:image/webp;base64,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" alt="mustard" class="logo">
+    <div class="hsep"></div>
+    <div class="htitle">Website Analytics Report · GA4</div>
   </div>
-  <div class="report-period">Jan 22 – Apr 21, 2026 · 90 days</div>
+  <div class="period">Jan 22 – Apr 21, 2026 · 90 days</div>
 </header>
 
-<div class="page-wrap">
+<div class="wrap">
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-label">Diagnostic Report</div>
-    <h1 class="hero-heading">What the data reveals —<br>and <em>what to do about it</em></h1>
-    <p class="hero-sub">90-day analysis of mustardfashion.com. Every finding is backed by GA4 data. Actions are sequenced by impact and effort so the biggest wins come first.</p>
-  </div>
-
-  <!-- STAT ROW -->
-  <div class="stat-row">
-    <div class="stat-card s-neutral">
-      <div class="stat-label">Reported Users</div>
-      <div class="stat-value">1.78L</div>
-      <div class="stat-note">178,875 reported — but ~67% are bots/crawlers. Real audience ≈ 58,000</div>
-    </div>
-    <div class="stat-card s-red">
-      <div class="stat-label">Returning Users</div>
-      <div class="stat-value v-red">2.4%</div>
-      <div class="stat-note">Only 4,299 people came back. Industry benchmark for fashion: 20–30%</div>
-    </div>
-    <div class="stat-card s-amber">
-      <div class="stat-label">Avg Engagement</div>
-      <div class="stat-value v-amber">25 sec</div>
-      <div class="stat-note">Most sessions end without meaningful browsing. Category pages are the exception</div>
-    </div>
-    <div class="stat-card s-green">
-      <div class="stat-label">Key Events</div>
-      <div class="stat-value v-green">7,527</div>
-      <div class="stat-note">GA4 conversion events tracked over 90 days across all interactions</div>
-    </div>
-    <div class="stat-card s-amber">
-      <div class="stat-label">Sale Page Bounce</div>
-      <div class="stat-value v-amber">51%</div>
-      <div class="stat-note">3rd most visited page. Half of all sale visitors leave immediately</div>
-    </div>
-  </div>
-
-  <!-- SECTION 1: DATA QUALITY -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">1</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Data Quality Issue — Fix This First</div>
-        <div class="section-sub">The analytics are polluted. Every decision made from this data is partially wrong.</div>
-      </div>
-    </div>
-
-    <div class="finding open" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-red"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">67% of reported users are bots, crawlers and CDN traffic</div>
-          <div class="finding-sub">Ashburn VA alone shows 106,225 "users" — an AWS data centre, not a customer</div>
-        </div>
-        <div class="impact-pill ip-red">Critical Fix</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-red">1,06,225</div><div class="dp-label">Ashburn VA "users"</div></div>
-          <div class="data-point"><div class="dp-val dv-red">~67%</div><div class="dp-label">Non-human traffic</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">~58,000</div><div class="dp-label">Real human visitors (est.)</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">~19,000</div><div class="dp-label">Real visitors/month</div></div>
-        </div>
-        <p>The top "cities" by user count are <strong>Ashburn VA, Prineville OR, Forest City NC, Fort Worth TX, Altoona PA, Gallatin TN</strong> — all AWS/Cloudflare infrastructure locations with zero plausible reason to browse an Indian ethnic wear site. These are server crawlers, uptime monitors and CDN bots being counted as users.</p>
-        <p>This inflates every metric. The real returning user rate, real bounce rate, and real conversion rate are all <em>better</em> than reported — but we can't know by how much until the data is clean.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Create a GA4 audience filter excluding Ashburn, Prineville, Forest City, Fort Worth, Altoona, Gallatin, Springfield</div>
-              <div class="action-note">GA4 → Admin → Data Filters → Create filter by city. 30 minutes. Immediate clean data going forward.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Add a bot filtering exclusion in GA4 property settings and confirm IP exclusion for office/warehouse IPs</div>
-              <div class="action-note">Admin → Data Streams → Web → More tagging settings → Define internal traffic</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Month 1</div>
-            <div>
-              <div class="action-text">Rebuild all reporting dashboards using filtered segments only — all future decisions based on clean numbers</div>
-              <div class="action-note">Consider a Looker Studio dashboard with the filter applied permanently</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 2: RETENTION -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">2</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Retention Crisis — Almost No One Comes Back</div>
-        <div class="section-sub">The biggest revenue gap in the data. Every visit is a stranger.</div>
-      </div>
-    </div>
-
-    <div class="finding open" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-red"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">2.4% returning user rate — against 20–30% industry benchmark</div>
-          <div class="finding-sub">174,576 new users. Only 4,299 returned. No email, no WhatsApp, no loyalty loop exists.</div>
-        </div>
-        <div class="impact-pill ip-red">High Revenue Impact</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-red">97.6%</div><div class="dp-label">First-time visitors</div></div>
-          <div class="data-point"><div class="dp-val dv-red">2.4%</div><div class="dp-label">Returning visitors</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">20–30%</div><div class="dp-label">Fashion industry avg</div></div>
-          <div class="data-point"><div class="dp-val dv-green">10x</div><div class="dp-label">Gap to close</div></div>
-        </div>
-        <p>A brand with 25 physical stores and thousands of loyal offline buyers is generating almost <strong>zero repeat online behaviour</strong>. This isn't a product problem — it's a <em>connection problem</em>. There is no mechanism to bring someone back after their first visit.</p>
-        <p>Acquiring a new customer costs 5–7× more than retaining one. Getting returning visitors from 2.4% to 10% alone — half the industry average — would meaningfully increase monthly revenue without any additional ad spend.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Activate the existing abandoned cart plugin — confirm emails are firing, check sequence timing (1hr / 24hr / 72hr)</div>
-              <div class="action-note">This is already installed but not confirmed active. First revenue recovery action.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Set up a post-purchase email: thank you → 3 days later: review request → 14 days later: "New arrivals you might like"</div>
-              <div class="action-note">Mailchimp or Klaviyo. Keeps the brand in front of buyers who have already purchased.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2–3</div>
-            <div>
-              <div class="action-text">Launch email capture popup: 10% off first order on signup. Target: 500 new subscribers/month</div>
-              <div class="action-note">Exit-intent trigger. Every email collected is a free future reach.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 3–4</div>
-            <div>
-              <div class="action-text">WhatsApp broadcast to existing phone numbers: new arrivals, sale alerts every 2 weeks</div>
-              <div class="action-note">The phone list from billing is the single most valuable asset. Start using it.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-month">Month 3</div>
-            <div>
-              <div class="action-text">Launch loyalty points program — earn online, redeem online or in-store. Bridges both channels.</div>
-              <div class="action-note">WooCommerce plugin. The in-store redemption option is the key differentiator.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 3: PAGE PROBLEMS -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">3</div>
-      <div class="section-title-wrap">
-        <div class="section-title">High-Traffic Pages With Critical Problems</div>
-        <div class="section-sub">Three pages that together get 54,000 views and are all leaking visitors</div>
-      </div>
-    </div>
-
-    <!-- Sale page -->
-    <div class="finding" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-red"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">Sale page — 17,902 views, 51% leave immediately</div>
-          <div class="finding-sub">3rd most visited page on the site. Half of all sale traffic is being wasted.</div>
-        </div>
-        <div class="impact-pill ip-red">₹30–50K/month opportunity</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-gold">17,902</div><div class="dp-label">Views (90 days)</div></div>
-          <div class="data-point"><div class="dp-val dv-red">51%</div><div class="dp-label">Bounce rate</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">5,976</div><div class="dp-label">Active users</div></div>
-          <div class="data-point"><div class="dp-val dv-red">~9,000</div><div class="dp-label">Lost visitors/qtr</div></div>
-        </div>
-        <p>People searching for "sale" are <strong>the most purchase-intent visitors on any site</strong> — they have made a decision to buy, they're just looking for the right price. A 51% bounce means the page is failing them at the moment of highest intent.</p>
-        <p>Likely causes: page loads slowly on mobile, filters not surfacing well-discounted items first, no urgency element (countdown, stock indicator), or the discount depth isn't compelling enough above the fold.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Test the sale page on mobile — time the load, check if filters work, check what's visible above the fold without scrolling</div>
-              <div class="action-note">Most sale traffic is mobile. If this page is slow or broken on mobile, that's the full explanation.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Sort sale products by "highest discount %" by default — show the best deals first</div>
-              <div class="action-note">Most WooCommerce sale pages default to "latest" which buries the best discounts.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Add a clear banner above the product grid: "Up to 40% off — ends [date]" with a countdown timer</div>
-              <div class="action-note">Urgency reduces bounce rate. Even a soft deadline ("while stocks last") improves conversion.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Add category filters specific to sale: type (kurta, dress, top), size, colour — make finding the right item easy</div>
-              <div class="action-note">People leave when they can't find what they want. Better filters = longer session = more likely purchase.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 404 page -->
-    <div class="finding" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-red"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">404 "Page not found" — 3,291 views, 58% bounce</div>
-          <div class="finding-sub">Dead product links shared on social/WhatsApp sending buyers to a dead end</div>
-        </div>
-        <div class="impact-pill ip-red">Immediate Fix</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-red">3,291</div><div class="dp-label">Views (90 days)</div></div>
-          <div class="data-point"><div class="dp-val dv-red">2,421</div><div class="dp-label">Unique users hitting 404</div></div>
-          <div class="data-point"><div class="dp-val dv-red">58%</div><div class="dp-label">Bounce rate</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">~36/day</div><div class="dp-label">Lost visitors daily</div></div>
-        </div>
-        <p>3,291 visits to a broken page over 90 days — roughly <strong>36 potential customers per day hitting a dead end</strong>. These are typically old product URLs that were shared on WhatsApp, Instagram, or Facebook and now point to products that have been discontinued or URLs that changed.</p>
-        <p>This is especially damaging because <em>these are often warm visitors</em> — someone sent them the link, meaning intent was already established before they even landed.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Export all 404 URLs from GA4 (Behaviour → Site Content → filter by "Page not found"), then set up 301 redirects to the nearest live category</div>
-              <div class="action-note">2–3 hours total. Recovers ~36 visitors/day immediately.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Update the 404 page itself: add a search bar, show "New Arrivals" and top categories — don't just show an error</div>
-              <div class="action-note">Even if the URL can't be redirected, a helpful 404 page recovers 20–30% of those visitors.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-month">Ongoing</div>
-            <div>
-              <div class="action-text">When discontinuing products, always set a redirect to the most similar in-stock product or the parent category</div>
-              <div class="action-note">Process change — prevents new 404s from building up with every catalogue update.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Blog -->
-    <div class="finding" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-amber"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">Blog exists but nobody reads it — 93% bounce rate</div>
-          <div class="finding-sub">21 pages of content, 695 views, 93% leave immediately. The infrastructure is there but unused.</div>
-        </div>
-        <div class="impact-pill ip-amber">SEO Opportunity</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-red">93%</div><div class="dp-label">Blog homepage bounce</div></div>
-          <div class="data-point"><div class="dp-val dv-red">98–100%</div><div class="dp-label">Individual post bounces</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">21</div><div class="dp-label">Pages of content exist</div></div>
-          <div class="data-point"><div class="dp-val dv-red">695</div><div class="dp-label">Total blog views/qtr</div></div>
-        </div>
-        <p>The blog exists but the content is either not indexed well or <strong>not matching what people are actually searching for</strong>. A well-written blog post targeting "best ethnic wear for Navratri 2026" or "how to style a co-ord set for Diwali" can rank on Google and drive free traffic for years.</p>
-        <p>This is a <em>zero-cost SEO compounding asset</em> that is currently producing nothing. The opportunity cost is significant — competitors writing this content are capturing the search traffic Mustard should own.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Audit existing blog content — are posts SEO-optimised? Do titles match search queries? Is there internal linking to product pages?</div>
-              <div class="action-note">Most existing posts likely have no keyword targeting. A rewrite of top 5 posts can show results in 4–8 weeks.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Month 1</div>
-            <div>
-              <div class="action-text">Publish 2 SEO-targeted posts/month: "Best ethnic wear for [upcoming festival]", "How to style a kurta set for work", "Plus size ethnic fashion guide"</div>
-              <div class="action-note">AI-drafted, reviewed for accuracy, published 8 weeks before relevant festival. Compounds over time.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-month">Month 2+</div>
-            <div>
-              <div class="action-text">Add "Shop this look" product links inside every blog post — convert blog readers into shoppers</div>
-              <div class="action-note">Blog without product links is free traffic going nowhere. Every post should end at a product page.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 4: TRAFFIC SOURCES -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">4</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Traffic Sources — What's Working and What's Not</div>
-        <div class="section-sub">Google organic is underutilised. Meta ads running but fragmented. Google paid underperforming.</div>
-      </div>
-    </div>
-
-    <div class="finding open" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-amber"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">Traffic source breakdown — real sessions only</div>
-          <div class="finding-sub">Meta ads running, Google organic strong, Google CPC underperforming vs spend</div>
-        </div>
-        <div class="impact-pill ip-amber">Rebalance Spend</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="bar-chart">
-          <div class="bar-row">
-            <div class="bar-label">Google Organic</div>
-            <div class="bar-track"><div class="bar-fill" style="width:34%;background:var(--green)"></div></div>
-            <div class="bar-val" style="color:var(--green)">21,580</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Meta Paid</div>
-            <div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--gold)"></div></div>
-            <div class="bar-val" style="color:var(--gold)">~18,884</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Facebook Referral</div>
-            <div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--gold-light)"></div></div>
-            <div class="bar-val" style="color:var(--muted)">13,612</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Google Paid (CPC)</div>
-            <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--amber)"></div></div>
-            <div class="bar-val" style="color:var(--amber)">7,796</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Instagram Social</div>
-            <div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--muted2)"></div></div>
-            <div class="bar-val" style="color:var(--muted2)">1,466</div>
-          </div>
-        </div>
-        <p><strong>Google organic (21,580 sessions)</strong> is the strongest real channel and it's free. This validates investing in SEO — the site already ranks well, it just needs more content and better product page optimisation.</p>
-        <p><strong>Meta paid (~18,884 sessions)</strong> is active but the campaign structure is fragmented — 30+ different campaign names and ad sets in the data, many with 1–3 sessions. Consolidating into fewer, better-structured campaigns will improve performance at the same spend level.</p>
-        <p><strong>Google CPC (7,796 sessions)</strong> is described as "not cost-effective." The issue is likely the product feed quality — Google Shopping needs clean titles, proper categorisation and competitive pricing signals. The traffic is available; the feed isn't optimised to capture it.</p>
-        <p><em>Instagram social (1,466)</em> — organic Instagram is generating very little traffic. The content isn't driving clicks to the site. Reels with product links and bio link optimisation (Linktree shows 47 sessions — confirm it's updated) can improve this significantly.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Audit Google Shopping product feed — check title format, category mapping, price accuracy and image quality for top 50 products</div>
-              <div class="action-note">Poor feed = low Quality Score = expensive clicks. Feed quality fixes reduce CPC by 30–50%.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Consolidate Meta campaigns — reduce to 3 clear objectives: Awareness (Reels), Retargeting (catalog), Conversion (sale items)</div>
-              <div class="action-note">30+ fragmented campaigns = budget diluted, no clear winner. Consolidation typically improves ROAS by 20–40%.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 3</div>
-            <div>
-              <div class="action-text">Add product link stickers to every Instagram Reel and Story — track clicks to site via UTM parameters</div>
-              <div class="action-note">Instagram social generating only 1,466 sessions despite active presence means content isn't converting to site visits.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-month">Month 2</div>
-            <div>
-              <div class="action-text">Launch Meta retargeting using website visitor pixel data — by Month 2 the pixel will have 60+ days of data, enough for effective retargeting audiences</div>
-              <div class="action-note">Retargeting CPAs are typically 3–5× lower than prospecting. This is when paid ads become genuinely cost-effective.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 5: SEARCH INTELLIGENCE -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">5</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Internal Search — A Map of What Customers Actually Want</div>
-        <div class="section-sub">People who use site search have the highest purchase intent. Their queries reveal gaps and opportunities.</div>
-      </div>
-    </div>
-
-    <div class="finding open" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-green"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">Search data reveals 4 clear product discovery problems</div>
-          <div class="finding-sub">Co-ord sets, Plus size, Offline reorders, and specific product categories are all being searched but not easily found</div>
-        </div>
-        <div class="impact-pill ip-green">Product Intelligence</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <p><strong>Most searched categories</strong> — validated demand, confirm these have strong landing pages:</p>
-        <div class="tag-cloud">
-          <span class="tag t-hot">Kurti / Kurtis</span>
-          <span class="tag t-hot">Dress</span>
-          <span class="tag t-hot">Top / Tops</span>
-          <span class="tag t-hot">Chiffon</span>
-          <span class="tag t-warm">Co-ord set</span>
-          <span class="tag t-warm">Rayon</span>
-          <span class="tag t-warm">Embroidered</span>
-          <span class="tag t-warm">Cotton</span>
-          <span class="tag t-warm">Palazzo</span>
-          <span class="tag t-warm">Schiffli</span>
-          <span class="tag">Winter wear</span>
-          <span class="tag">Festival / Festive</span>
-          <span class="tag">Shirt</span>
-          <span class="tag">Dupatta</span>
-          <span class="tag">Tunic</span>
-        </div>
-        <p style="margin-top:16px"><strong>Problem 1 — Co-ord sets are searched in 15+ different spellings</strong></p>
-        <div class="tag-cloud">
-          <span class="tag t-gap">Co-ord set</span><span class="tag t-gap">Co ord set</span><span class="tag t-gap">Coord set</span><span class="tag t-gap">Cord set</span><span class="tag t-gap">Coard set</span><span class="tag t-gap">Co-od set</span><span class="tag t-gap">Coordset</span><span class="tag t-gap">Cord sets</span><span class="tag t-gap">Coodset</span>
-        </div>
-        <p>15+ spelling variants for the same product means <strong>people cannot find it through navigation</strong>. They're typing because the menu path isn't clear. A dedicated "Co-ord Sets" category page with a clean URL and prominent navigation placement would capture all of this demand without needing search.</p>
-
-        <p style="margin-top:16px"><strong>Problem 2 — Plus size audience is searching but not landing</strong><br>
-        "Plus size", "Plus size tops", "Plus size kurtis", "Plus size clothing", "6XL", "7XL", "Jeans 7XL", "5XL gowns" all appear in search. <em>Mustard's XS–6XL sizing is a genuine competitive advantage</em> that isn't being communicated clearly enough — this audience is already on the site but can't find the right products.</p>
-
-        <p style="margin-top:16px"><strong>Problem 3 — Offline customers searching by SKU code to reorder</strong><br>
-        Searches like A2507, T1206, D1194, A2531, F1226, T1233 are <strong>store customers who bought a product offline and are trying to reorder it online</strong>. This is the offline-to-online bridge happening organically — and there's no system to capture it. These are the highest-intent visitors on the site.</p>
-
-        <p style="margin-top:16px"><strong>Problem 4 — Seasonal gaps: "Winter", "Festive", "Party wear" searched but likely hard to find</strong><br>
-        "Winter kurti", "Festive wear", "Party wear kurtis", "Summer dresses" — these are occasion-based searches that suggest customers think in terms of events, not product types. Category pages organised by occasion (not just product type) would serve these searchers better.</p>
-
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Add "Co-ord Sets" as a top-level navigation item with a clean category page — not buried under a sub-menu</div>
-              <div class="action-note">Also add search synonyms in WooCommerce so all spellings resolve to the same page.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Create a "Plus Size" category/filter page highlighting the XS–6XL range — this is a competitive differentiator that isn't visible enough</div>
-              <div class="action-note">A dedicated plus size landing page also ranks well on Google for "plus size ethnic wear online India".</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Add a "Find by style code" search helper and ensure all products have their offline SKU code in the product description and searchable metadata</div>
-              <div class="action-note">Customers who bought in-store and come online to reorder are the easiest conversion possible. Don't make them search and fail.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Month 1</div>
-            <div>
-              <div class="action-text">Add occasion-based landing pages: "Festive Wear", "Wedding Guest Outfits", "Office Wear", "Casual Daily Wear" with curated product selections</div>
-              <div class="action-note">These pages also rank for high-intent Google searches like "ethnic wear for Diwali 2026".</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 6: GEOGRAPHY -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num">6</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Geography — Where Real Customers Are</div>
-        <div class="section-sub">Top cities reveal where to focus campaigns and which store cities drive online traffic</div>
-      </div>
-    </div>
-
-    <div class="finding" onclick="toggle(this)">
-      <div class="finding-head">
-        <div class="severity sev-green"></div>
-        <div class="finding-title-col">
-          <div class="finding-title">Store Locator gets 3,508 visits — 57% leave without finding what they need</div>
-          <div class="finding-sub">Online visitors looking for physical stores represent offline demand you can convert both ways</div>
-        </div>
-        <div class="impact-pill ip-green">Offline Bridge</div>
-        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
-      </div>
-      <div class="finding-body">
-        <div class="data-block">
-          <div class="data-point"><div class="dp-val dv-gold">3,508</div><div class="dp-label">Store locator visits/qtr</div></div>
-          <div class="data-point"><div class="dp-val dv-red">57%</div><div class="dp-label">Bounce rate</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">Bengaluru</div><div class="dp-label">#1 real city (5,175)</div></div>
-          <div class="data-point"><div class="dp-val dv-gold">Delhi + NCR</div><div class="dp-label">#2 cluster (4,300+)</div></div>
-        </div>
-        <p>Top real Indian cities: <strong>Bengaluru (5,175), Delhi (3,135), Hyderabad (1,949), Chennai (1,539), Patna (1,208), Lucknow (1,166), Mumbai (1,085)</strong>. Notably, <em>Patna and Lucknow in the top 6</em> — both strong ethnic wear markets suggesting high regional brand affinity.</p>
-        <p>3,508 people visited the store locator — these are online visitors actively trying to find a physical store. A 57% bounce suggests the page isn't working on mobile or the information isn't helpful enough. These visitors are also prime candidates for a "Can't find a store near you? Shop online with free delivery" prompt.</p>
-        <div class="actions">
-          <div class="actions-title">Actions</div>
-          <div class="action-item">
-            <div class="action-phase ph-now">This Week</div>
-            <div>
-              <div class="action-text">Test store locator on mobile — check if map loads, if addresses are accurate, if phone numbers are clickable</div>
-              <div class="action-note">57% bounce on a page where people have explicit intent (find a store) suggests a functional problem, not a content problem.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-week">Week 2</div>
-            <div>
-              <div class="action-text">Add a "Shop online instead" CTA on the store locator: "Can't visit? Get the same collection delivered free." Link to homepage with a discount code.</div>
-              <div class="action-note">Converting even 15% of these 3,508 visitors to online shoppers = ~500 new online buyers/quarter.</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-phase ph-month">Month 1</div>
-            <div>
-              <div class="action-text">Create city-specific landing pages for top 5 outlet cities: "Ethnic wear in Bengaluru | Mustard Fashion" — captures local Google searches and drives both footfall and online orders</div>
-              <div class="action-note">Bengaluru, Delhi, Hyderabad, Chennai, Lucknow as priority based on traffic data.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- PHASE ROADMAP -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-num" style="background:var(--gold-pale);border-color:var(--gold)">★</div>
-      <div class="section-title-wrap">
-        <div class="section-title">Phased Action Plan</div>
-        <div class="section-sub">All actions sequenced by impact and effort. Biggest wins come first, zero spend required in Phase 1.</div>
-      </div>
-    </div>
-
-    <div class="phase-grid">
-      <div class="phase-card pc-1">
-        <div class="phase-period">Days 1–7</div>
-        <div class="phase-name">Fix & Clean</div>
-        <ul class="phase-items">
-          <li>Filter bots from GA4 — clean data from today</li>
-          <li>Fix all 404 redirects — 36 visitors/day recovered</li>
-          <li>Activate abandoned cart emails — confirm firing</li>
-          <li>Test sale page on mobile — diagnose bounce</li>
-          <li>Test store locator on mobile — diagnose bounce</li>
-          <li>Add Co-ord Sets to top navigation</li>
-        </ul>
-      </div>
-      <div class="phase-card pc-2">
-        <div class="phase-period">Week 2–4</div>
-        <div class="phase-name">Convert Better</div>
-        <ul class="phase-items">
-          <li>Sale page: sort by discount, add urgency banner</li>
-          <li>Email capture popup — 10% off signup</li>
-          <li>Post-purchase email sequence live</li>
-          <li>WhatsApp broadcast to existing phone list</li>
-          <li>Plus size category/filter page</li>
-          <li>SKU search — offline reorder pathway</li>
-          <li>Audit + consolidate Meta campaigns</li>
-          <li>Google Shopping feed quality audit</li>
-        </ul>
-      </div>
-      <div class="phase-card pc-3">
-        <div class="phase-period">Month 2</div>
-        <div class="phase-name">Grow Traffic</div>
-        <ul class="phase-items">
-          <li>2 SEO blog posts published</li>
-          <li>City landing pages: Bengaluru, Delhi, Hyderabad</li>
-          <li>Occasion pages: Festive, Wedding, Office</li>
-          <li>Meta retargeting campaigns live</li>
-          <li>Instagram Reels with product links</li>
-          <li>Store locator "Shop online instead" CTA</li>
-        </ul>
-      </div>
-      <div class="phase-card pc-4">
-        <div class="phase-period">Month 3+</div>
-        <div class="phase-name">Retain & Scale</div>
-        <ul class="phase-items">
-          <li>Loyalty points program launch</li>
-          <li>Birthday / anniversary campaigns</li>
-          <li>Referral program — ₹200 both ways</li>
-          <li>VIP early access tier for repeat buyers</li>
-          <li>Monthly SEO blog cadence established</li>
-          <li>Looker Studio clean dashboard live</li>
-        </ul>
-      </div>
-    </div>
-
-    <div style="margin-top:24px;background:var(--card);border:1px solid var(--border-strong);border-radius:12px;padding:20px 24px;display:flex;align-items:flex-start;gap:16px">
-      <div style="color:var(--gold);font-size:18px;flex-shrink:0;margin-top:2px">↗</div>
-      <div>
-        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Expected outcome from Phase 1 + 2 alone</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.7">Fixing the 404s, activating abandoned cart recovery, improving the sale page and launching the WhatsApp broadcast to the existing customer base — <strong style="color:var(--text)">all of these require zero additional ad spend</strong> and collectively target ₹40,000–80,000 in incremental monthly revenue from the traffic already arriving at the site.</div>
-      </div>
-    </div>
-  </div>
-
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">Diagnostic Report</div>
+  <h1>What the data says —<br>and <em>what it means for revenue</em></h1>
+  <p class="hero-p">90-day analysis of mustardfashion.com. Data-backed findings, visualised. Every action is tied to a measurable outcome.</p>
 </div>
 
-<footer>
-  Mustard Fashion · Website Analytics Report · Data period: Jan 22 – Apr 21, 2026 · Source: GA4
-</footer>
+<!-- SCORECARD -->
+<div class="scorecard">
+  <div class="sc sc-g"><div class="sc-lbl">Real Monthly Visitors</div><div class="sc-val o">~19K</div><div class="sc-note">After filtering ~1,20,000 bots. Actual humans visiting the site.</div></div>
+  <div class="sc sc-r"><div class="sc-lbl">Return Visit Rate</div><div class="sc-val r">2.4%</div><div class="sc-note">Industry avg is 20–30%. 10× gap to close.</div></div>
+  <div class="sc sc-a"><div class="sc-lbl">Sale Page Bounce</div><div class="sc-val a">51%</div><div class="sc-note">3rd most visited page. Half of sale visitors leave immediately.</div></div>
+  <div class="sc sc-a"><div class="sc-lbl">Avg Engagement</div><div class="sc-val a">25 sec</div><div class="sc-note">Most sessions end before meaningful browsing begins.</div></div>
+  <div class="sc sc-r"><div class="sc-lbl">Lost to Broken Links</div><div class="sc-val r">3,291</div><div class="sc-note">Visits to 404 pages — ~36 warm visitors lost per day.</div></div>
+</div>
+
+<!-- SECTION 1: Traffic quality -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">1</div>
+    <div><div class="sec-title">Traffic Reality — Most "Users" Are Not Customers</div>
+    <div class="sec-sub">The GA4 data is inflated by bots. Real audience is ~58,000 over 90 days, not 178,875.</div></div>
+  </div>
+
+  <div class="chart-grid g12">
+    <div class="ccard">
+      <div class="ccard-title">What the 1,78,875 "users" actually are</div>
+      <div class="ccard-sub">67% are server bots and CDN crawlers — Ashburn VA alone accounts for 1,06,225</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="trafficPie"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Top "cities" — bot vs real</div>
+      <div class="ccard-sub">Every US data-centre city in the top list is non-human traffic</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="citiesBar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="impact-row" style="margin-top:16px;">
+    <div class="imp r"><div class="imp-num r">1,06,225</div><div class="imp-label">Ashburn VA "users"<br>AWS data centre, not shoppers</div></div>
+    <div class="imp a"><div class="imp-num a">~1,20,000</div><div class="imp-label">Total bot/crawler traffic<br>polluting all reports</div></div>
+    <div class="imp g"><div class="imp-num g">~58,000</div><div class="imp-label">Real human visitors in 90 days<br>~19,000/month actual audience</div></div>
+  </div>
+</div>
+
+<!-- SECTION 2: Retention -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">2</div>
+    <div><div class="sec-title">The Retention Gap — Nobody Comes Back</div>
+    <div class="sec-sub">2.4% returning rate vs 20–30% industry benchmark. Every session is a stranger.</div></div>
+  </div>
+
+  <div class="chart-grid g3">
+    <div class="ccard">
+      <div class="ccard-title">New vs Returning users</div>
+      <div class="ccard-sub">97.6% of visitors are first-time</div>
+      <div class="chart-wrap" style="height:190px"><canvas id="retentionDoughnut"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Returning rate vs industry</div>
+      <div class="ccard-sub">Mustard is at 2.4% vs 20–30% benchmark</div>
+      <div class="chart-wrap" style="height:190px"><canvas id="benchmarkBar"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Revenue impact of fixing retention</div>
+      <div class="ccard-sub">Moving from 2.4% → 10% returning rate</div>
+      <div class="chart-wrap" style="height:190px"><canvas id="retentionImpact"></canvas></div>
+    </div>
+  </div>
+
+  <div class="impact-row">
+    <div class="imp r"><div class="imp-num r">5–7×</div><div class="imp-label">Cost to acquire a new customer vs retaining an existing one</div></div>
+    <div class="imp a"><div class="imp-num a">0 ₹</div><div class="imp-label">Additional ad spend needed<br>to fix retention</div></div>
+    <div class="imp g"><div class="imp-num g">+₹40–80K</div><div class="imp-label">Estimated monthly revenue gain<br>from activation alone (Phase 1)</div></div>
+  </div>
+</div>
+
+<!-- SECTION 3: Page problems -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">3</div>
+    <div><div class="sec-title">Page-Level Problems — Where Visitors Are Being Lost</div>
+    <div class="sec-sub">Three high-traffic pages collectively get 25,000+ views and have avoidable, fixable problems.</div></div>
+  </div>
+
+  <div class="chart-grid g2">
+    <div class="ccard">
+      <div class="ccard-title">Bounce rates — key pages vs category average</div>
+      <div class="ccard-sub">Sale page and 404 page are significantly above the site average</div>
+      <div class="chart-wrap" style="height:230px"><canvas id="bounceBar"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Checkout funnel — where people drop off</div>
+      <div class="ccard-sub">Only 7% of homepage visitors reach checkout</div>
+      <div class="chart-wrap" style="height:230px"><canvas id="funnelChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="impact-row">
+    <div class="imp r"><div class="imp-num r">~9,000</div><div class="imp-label">Visitors lost from sale page<br>every quarter (51% bounce)</div></div>
+    <div class="imp a"><div class="imp-num a">~36/day</div><div class="imp-label">Warm visitors hitting 404 pages<br>daily — referred, high intent</div></div>
+    <div class="imp g"><div class="imp-num g">2 hrs</div><div class="imp-label">Time needed to fix 404 redirects<br>and recover those visitors</div></div>
+  </div>
+</div>
+
+<!-- SECTION 4: Traffic sources -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">4</div>
+    <div><div class="sec-title">Traffic Sources — What's Driving Real Visits</div>
+    <div class="sec-sub">Google organic is the strongest free channel. Meta paid is running but fragmented. Google CPC underperforming.</div></div>
+  </div>
+
+  <div class="chart-grid g21">
+    <div class="ccard">
+      <div class="ccard-title">Session sources — real traffic only</div>
+      <div class="ccard-sub">Excluding bot traffic. Google organic leads as a free channel.</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="sourcesBar"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Channel quality assessment</div>
+      <div class="ccard-sub">What each channel needs to improve</div>
+      <div style="margin-top:8px;">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:var(--grn-bg);border:1px solid var(--grn-bd);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:500;color:var(--grn);">✓ Google Organic — 21,580 sessions</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Strongest real channel, free. More SEO content = more free traffic.</div>
+          </div>
+          <div style="background:var(--amb-bg);border:1px solid var(--amb-bd);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:500;color:var(--amb);">⚠ Meta Paid — ~18,884 sessions</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Running but 30+ fragmented campaigns. Consolidate to 3 objectives.</div>
+          </div>
+          <div style="background:var(--red-bg);border:1px solid var(--red-bd);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:500;color:var(--red);">✗ Google CPC — 7,796 sessions</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Not cost-effective. Fix: product feed quality, not budget.</div>
+          </div>
+          <div style="background:var(--red-bg);border:1px solid var(--red-bd);border-radius:8px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:500;color:var(--red);">✗ Instagram Organic — 1,466 sessions</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Active presence, almost no website traffic. Add product link stickers.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: Search intelligence -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">5</div>
+    <div><div class="sec-title">What Customers Are Searching For — But Not Finding</div>
+    <div class="sec-sub">Internal search data reveals exactly where the site navigation is failing high-intent visitors.</div></div>
+  </div>
+
+  <div class="chart-grid g2">
+    <div class="ccard">
+      <div class="ccard-title">Top site search categories</div>
+      <div class="ccard-sub">Volume of searches — these categories need strong, findable pages</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="searchBar"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-title">Three discovery failures with easy fixes</div>
+      <div class="ccard-sub">High-intent searches ending in frustration</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+        <div style="background:var(--blu-bg);border:1px solid var(--blu-bd);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:500;color:var(--blu);margin-bottom:4px;">Co-ord Sets searched in 15+ spellings</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;"><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Co-ord set</span><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Coord set</span><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Cord set</span><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Coard set</span><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Coordset</span><span style="font-size:10px;padding:2px 8px;background:white;border:1px solid var(--blu-bd);border-radius:10px;color:var(--muted)">Co-od set</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">Fix: dedicated page + navigation item. 1 day of work.</div>
+        </div>
+        <div style="background:var(--amb-bg);border:1px solid var(--amb-bd);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:500;color:var(--amb);margin-bottom:4px;">Plus size (XS–6XL) buyers can't find their section</div>
+          <div style="font-size:11px;color:var(--muted);">Mustard's size range is a competitive advantage that isn't visible. A dedicated Plus Size page also ranks on Google.</div>
+        </div>
+        <div style="background:var(--grn-bg);border:1px solid var(--grn-bd);border-radius:8px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:500;color:var(--grn);margin-bottom:4px;">Offline customers reordering by SKU code</div>
+          <div style="font-size:11px;color:var(--muted);">Searches like A2507, T1206, D1194 = store buyers returning online. Make SKUs searchable — easiest conversion possible.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVENUE PROJECTION -->
+<div class="rev-section">
+  <div class="rev-title">Projected Revenue Impact — Phased Plan</div>
+  <div class="rev-sub">Conservative estimates based on industry benchmarks. Festival season spikes not included — those can add 3–4× in a single month.</div>
+  <div class="chart-wrap" style="height:280px"><canvas id="revenueChart"></canvas></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px;">
+    <div style="background:white;border:1px solid var(--gold-bd);border-radius:8px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:4px;">Today (baseline)</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--gold-d);">₹4–5L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">Without active marketing or funnels</div>
+    </div>
+    <div style="background:white;border:1px solid var(--gold-bd);border-radius:8px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:4px;">Month 1–2 (Phase 1+2)</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--amb);">₹6–8L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">Leaks plugged, offline base activated. Zero ad spend.</div>
+    </div>
+    <div style="background:white;border:1px solid var(--gold-bd);border-radius:8px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:4px;">Month 3–4 (Paid live)</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--gold);">₹9–12L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">Google Shopping + Meta retargeting converting.</div>
+    </div>
+    <div style="background:white;border:1px solid var(--gold-bd);border-radius:8px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2);margin-bottom:4px;">Month 6+ (Target)</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--grn);">₹15–20L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">Retention flywheel, loyalty, compounding SEO.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION PLAN -->
+<div class="section">
+  <div class="sec-hd">
+    <div class="sec-num">★</div>
+    <div><div class="sec-title">Phased Action Plan</div>
+    <div class="sec-sub">Sequenced by impact. Zero ad spend in Phase 1. Every action tied to a measurable outcome.</div></div>
+  </div>
+
+  <div class="action-grid">
+    <div class="ac a1">
+      <div class="ac-when">Days 1–7</div>
+      <div class="ac-name">Fix & Clean</div>
+      <ul class="ac-list">
+        <li>Filter bots from GA4 — clean data now</li>
+        <li>Redirect all 404 URLs — 36 visitors/day recovered</li>
+        <li>Confirm abandoned cart emails firing</li>
+        <li>Test sale page on mobile</li>
+        <li>Add Co-ord Sets to top navigation</li>
+        <li>Test store locator on mobile</li>
+      </ul>
+    </div>
+    <div class="ac a2">
+      <div class="ac-when">Week 2–4</div>
+      <div class="ac-name">Convert Better</div>
+      <ul class="ac-list">
+        <li>Sale page: sort by discount, add urgency</li>
+        <li>Post-purchase 3-email sequence live</li>
+        <li>Email popup — 10% off on signup</li>
+        <li>WhatsApp broadcast to phone list</li>
+        <li>Plus size landing page</li>
+        <li>SKU codes searchable — reorder path</li>
+        <li>Consolidate Meta to 3 campaigns</li>
+        <li>Google Shopping feed quality audit</li>
+      </ul>
+    </div>
+    <div class="ac a3">
+      <div class="ac-when">Month 2</div>
+      <div class="ac-name">Grow Traffic</div>
+      <ul class="ac-list">
+        <li>2 SEO blog posts published</li>
+        <li>City pages: Bengaluru, Delhi, Hyderabad</li>
+        <li>Occasion pages: Festive, Wedding, Office</li>
+        <li>Meta retargeting campaigns live</li>
+        <li>Instagram Reels with product links</li>
+        <li>Store locator "Shop online" CTA</li>
+      </ul>
+    </div>
+    <div class="ac a4">
+      <div class="ac-when">Month 3+</div>
+      <div class="ac-name">Retain & Scale</div>
+      <ul class="ac-list">
+        <li>Loyalty points program launch</li>
+        <li>Birthday / anniversary campaigns</li>
+        <li>Referral program — ₹200 both ways</li>
+        <li>VIP early access tier</li>
+        <li>Monthly SEO blog cadence</li>
+        <li>Clean Looker Studio dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sbanner">
+    <div class="sb-icon">↗</div>
+    <div>
+      <div class="sb-t">Phase 1 + 2 requires zero additional ad spend and targets ₹40,000–80,000 in incremental monthly revenue</div>
+      <div class="sb-d">Fixing the 404s, activating abandoned cart recovery, improving the sale page, launching the WhatsApp broadcast to the existing customer base — all from traffic already arriving at the site today. The revenue opportunity is already here; it's just not being captured.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>Mustard Fashion · Website Analytics Report · Jan 22 – Apr 21, 2026 · Source: Google Analytics 4</footer>
 
 <script>
-  function toggle(el) {
-    el.classList.toggle('open');
-  }
-</script>
+const GOLD='#C9A227', GOLD_L='#E8C54A', GOLD_BG='rgba(201,162,39,0.12)';
+const RED='#C0392B', RED_BG='rgba(192,57,43,0.1)';
+const AMB='#D4681A', AMB_BG='rgba(212,104,26,0.1)';
+const GRN='#2E7D52', GRN_BG='rgba(46,125,82,0.1)';
+const BLU='#2563A8', BLU_BG='rgba(37,99,168,0.1)';
+const MUTED='#A89E85';
 
+const defaults = {
+  font:{family:"'DM Sans', sans-serif"},
+  plugins:{legend:{labels:{font:{family:"'DM Sans', sans-serif",size:11},color:'#7A6E55',boxWidth:12,padding:12}}},
+  scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{color:'rgba(0,0,0,0.04)'}}}
+};
+
+// 1. Traffic pie
+new Chart(document.getElementById('trafficPie'),{type:'doughnut',data:{labels:['Bot / Crawler Traffic','Real Human Visitors'],datasets:[{data:[120000,58875],backgroundColor:[RED_BG.replace('0.1','0.7'),GOLD_BG.replace('0.12','0.7')],borderColor:[RED,GOLD],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:"'DM Sans',sans-serif",size:11},color:'#7A6E55',boxWidth:12,padding:10}},tooltip:{callbacks:{label:ctx=>{const v=ctx.parsed;const pct=((v/178875)*100).toFixed(1);return ` ${ctx.label}: ${(v/1000).toFixed(0)}K (${pct}%)`}}}},cutout:'60%'}});
+
+// 2. Cities bar
+new Chart(document.getElementById('citiesBar'),{type:'bar',data:{labels:['Ashburn VA','Singapore','Bengaluru','Prineville OR','Forest City NC','Delhi','Fort Worth TX'],datasets:[{label:'Users',data:[106225,9455,5175,4189,3608,3135,2155],backgroundColor:[RED_BG.replace('0.1','0.6'),RED_BG.replace('0.1','0.35'),GOLD_BG,RED_BG.replace('0.1','0.35'),RED_BG.replace('0.1','0.35'),GOLD_BG,RED_BG.replace('0.1','0.35')],borderColor:[RED,RED,GOLD,RED,RED,GOLD,RED],borderWidth:1.5}]},options:{...defaults,indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x.toLocaleString('en-IN')} users`}}}}});
+
+// 3. Retention doughnut
+new Chart(document.getElementById('retentionDoughnut'),{type:'doughnut',data:{labels:['New visitors (97.6%)','Returning (2.4%)'],datasets:[{data:[97.6,2.4],backgroundColor:['rgba(201,162,39,0.15)','#C9A227'],borderColor:['#EAD68A','#9E7D1A'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:"'DM Sans',sans-serif",size:11},color:'#7A6E55',boxWidth:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}`}}},cutout:'65%'}});
+
+// 4. Benchmark bar
+new Chart(document.getElementById('benchmarkBar'),{type:'bar',data:{labels:['Mustard Today','Target (6 months)','Industry Avg','Top Fashion Brands'],datasets:[{label:'Returning User Rate %',data:[2.4,10,22,30],backgroundColor:[RED_BG.replace('0.1','0.7'),AMB_BG.replace('0.1','0.7'),GRN_BG.replace('0.1','0.5'),GRN_BG.replace('0.1','0.7')],borderColor:[RED,AMB,GRN,GRN],borderWidth:2}]},options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y}%`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{display:false}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},max:35}}}});
+
+// 5. Retention impact (revenue)
+new Chart(document.getElementById('retentionImpact'),{type:'bar',data:{labels:['Current (2.4%)','Phase 1 fix','Phase 2 target','6-month goal'],datasets:[{label:'Est. monthly revenue (₹L)',data:[4.5,6.5,9,15],backgroundColor:[RED_BG.replace('0.1','0.5'),AMB_BG.replace('0.1','0.6'),GOLD_BG.replace('0.12','0.7'),GRN_BG.replace('0.1','0.7')],borderColor:[RED,AMB,GOLD,GRN],borderWidth:2}]},options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ₹${ctx.parsed.y}L/month`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:9},color:'#A89E85'},grid:{display:false}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>'₹'+v+'L'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
+
+// 6. Bounce bar
+new Chart(document.getElementById('bounceBar'),{type:'bar',data:{labels:['Sale Page','404 Error','Store Locator','Blog','Homepage','Category Pages','Cart Page'],datasets:[{label:'Bounce Rate %',data:[51,58,57,93,36,12,2],backgroundColor:['rgba(192,57,43,0.65)','rgba(192,57,43,0.65)','rgba(212,104,26,0.55)','rgba(192,57,43,0.7)','rgba(201,162,39,0.4)','rgba(46,125,82,0.4)','rgba(46,125,82,0.65)'],borderColor:[RED,RED,AMB,RED,GOLD,GRN,GRN],borderWidth:1.5}]},options:{...defaults,indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x}% bounce`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},max:100},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{display:false}}}}});
+
+// 7. Funnel
+new Chart(document.getElementById('funnelChart'),{type:'bar',data:{labels:['Homepage','Product Page','Add to Cart','Checkout','Key Event'],datasets:[{label:'Visitors',data:[32359,12860,382,2216,7527],backgroundColor:['rgba(201,162,39,0.7)','rgba(201,162,39,0.55)','rgba(192,57,43,0.55)','rgba(46,125,82,0.6)','rgba(46,125,82,0.75)'],borderColor:[GOLD,GOLD,RED,GRN,GRN],borderWidth:2,borderRadius:4}]},options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y.toLocaleString('en-IN')} visitors`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{display:false}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v},grid:{color:'rgba(0,0,0,0.04)'}}}}});
+
+// 8. Traffic sources
+new Chart(document.getElementById('sourcesBar'),{type:'bar',data:{labels:['Google Organic','Meta Paid','FB Referral','Google CPC','IG Organic','Bing'],datasets:[{label:'Sessions',data:[21580,18884,13612,7796,1466,369],backgroundColor:['rgba(46,125,82,0.65)','rgba(201,162,39,0.6)','rgba(201,162,39,0.4)','rgba(212,104,26,0.55)','rgba(212,104,26,0.35)','rgba(168,158,133,0.4)'],borderColor:[GRN,GOLD,GOLD,AMB,AMB,MUTED],borderWidth:1.5,borderRadius:4}]},options:{...defaults,responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y.toLocaleString('en-IN')} sessions`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{display:false}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v},grid:{color:'rgba(0,0,0,0.04)'}}}}});
+
+// 9. Search terms
+new Chart(document.getElementById('searchBar'),{type:'bar',data:{labels:['Kurti/Kurtis','Dress','Chiffon','Co-ord set','Top/Tops','Rayon','Plus size','Festival','Cotton','Palazzo'],datasets:[{label:'Search volume (est.)',data:[280,180,140,130,120,95,65,55,50,45],backgroundColor:['rgba(201,162,39,0.75)','rgba(201,162,39,0.65)','rgba(201,162,39,0.55)','rgba(37,99,168,0.6)','rgba(201,162,39,0.5)','rgba(201,162,39,0.45)','rgba(212,104,26,0.6)','rgba(201,162,39,0.4)','rgba(201,162,39,0.38)','rgba(201,162,39,0.35)'],borderColor:[GOLD,GOLD,GOLD,BLU,GOLD,GOLD,AMB,GOLD,GOLD,GOLD],borderWidth:1.5,borderRadius:4}]},options:{...defaults,indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{display:false}}}}});
+
+// 10. Revenue projection
+new Chart(document.getElementById('revenueChart'),{type:'line',data:{labels:['Today','Month 1','Month 2','Month 3','Month 4','Month 5','Month 6','Year 1+'],datasets:[{label:'Conservative target (₹L)',data:[4.5,6.5,8,10,12,14,17,25],borderColor:GOLD,backgroundColor:'rgba(201,162,39,0.08)',borderWidth:2.5,pointBackgroundColor:GOLD,pointRadius:5,pointHoverRadius:7,tension:0.4,fill:true},{label:'Baseline (no action)',data:[4.5,4.5,5,5,5,5.5,5.5,6],borderColor:'rgba(168,158,133,0.5)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],pointBackgroundColor:'rgba(168,158,133,0.5)',pointRadius:3,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:"'DM Sans',sans-serif",size:11},color:'#7A6E55',boxWidth:20,padding:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ₹${ctx.parsed.y}L/month`}}},scales:{x:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{font:{family:"'DM Sans',sans-serif",size:10},color:'#A89E85',callback:v=>'₹'+v+'L'},grid:{color:'rgba(0,0,0,0.04)'},min:0,max:28}}}});
+</script>
 </body>
 </html>
