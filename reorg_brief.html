@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mustard Fashion — Category Reorganisation: Findings &amp; Decisions</title>
+<style>
+  /* minimal reset (mirrors the hosted wrapper) */
+  *,*::before,*::after{box-sizing:border-box}
+  body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+  ul[class],ol[class]{list-style:none;padding:0}
+  img,picture,svg{max-width:100%;display:block}
+  input,button,textarea,select{font:inherit;color:inherit}
+  table{border-collapse:collapse}
+</style>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#FCFBF9; --surface:#FFFFFF; --surface-2:#F6F3EC;
+    --ink:#211E1A; --muted:#6B655C; --border:#E7E2D9;
+    --accent:#A6741A; --accent-soft:#F0E4CB;
+    --attn:#BC4B2E; --attn-soft:#F7E2D8;
+    --ready:#2E7D53; --ready-soft:#DCEDE2;
+    --shadow:0 1px 2px rgba(33,30,26,.04),0 8px 24px rgba(33,30,26,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1A1815; --surface:#232019; --surface-2:#2B2720;
+      --ink:#ECE8E1; --muted:#A39C90; --border:#37322A;
+      --accent:#E0B24A; --accent-soft:#3A3016;
+      --attn:#E88E6B; --attn-soft:#3B241B;
+      --ready:#74C99A; --ready-soft:#1E2E24;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#FCFBF9; --surface:#FFFFFF; --surface-2:#F6F3EC;
+    --ink:#211E1A; --muted:#6B655C; --border:#E7E2D9;
+    --accent:#A6741A; --accent-soft:#F0E4CB;
+    --attn:#BC4B2E; --attn-soft:#F7E2D8;
+    --ready:#2E7D53; --ready-soft:#DCEDE2;
+  }
+  :root[data-theme="dark"]{
+    --bg:#1A1815; --surface:#232019; --surface-2:#2B2720;
+    --ink:#ECE8E1; --muted:#A39C90; --border:#37322A;
+    --accent:#E0B24A; --accent-soft:#3A3016;
+    --attn:#E88E6B; --attn-soft:#3B241B;
+    --ready:#74C99A; --ready-soft:#1E2E24;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+  .page{max-width:840px;margin:0 auto}
+
+  .serif{font-family:Georgia,"Iowan Old Style","Times New Roman",serif}
+  h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:600;text-wrap:balance;line-height:1.2}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 10px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+
+  /* Header */
+  header.masthead{padding:clamp(40px,7vw,72px) 0 28px;border-bottom:2px solid var(--ink)}
+  header.masthead h1{font-size:clamp(30px,5.2vw,46px);margin:0 0 12px;letter-spacing:-.01em}
+  header.masthead p.lede{font-size:clamp(17px,2.4vw,20px);color:var(--muted);margin:0;max-width:60ch}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:22px;font-size:13px;color:var(--muted)}
+  .meta b{color:var(--ink);font-weight:600}
+
+  section{padding:40px 0;border-bottom:1px solid var(--border)}
+  section:last-of-type{border-bottom:0}
+  h2{font-size:clamp(22px,3.4vw,28px);margin:0 0 6px}
+  .section-sub{color:var(--muted);margin:0 0 24px;max-width:64ch}
+
+  /* Stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+  .tile .n{font-family:Georgia,serif;font-size:34px;font-weight:600;letter-spacing:-.02em;display:block}
+  .tile .l{font-size:13px;color:var(--muted);margin-top:2px}
+  .tile.flag .n{color:var(--attn)}
+  .tile.good .n{color:var(--ready)}
+
+  /* Ready list */
+  ul.ready{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  ul.ready li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  ul.ready li .ck{color:var(--ready);flex:0 0 auto;font-weight:700;margin-top:1px}
+  ul.ready li b{font-weight:600}
+  ul.ready li .c{color:var(--muted);font-size:14px}
+
+  /* Table */
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+  thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:inherit;font-weight:600;background:var(--surface-2)}
+  tbody tr:last-child td{border-bottom:0}
+  td.cat{font-weight:600}
+  td .sub{color:var(--muted)}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+  .pill.reuse{background:var(--ready-soft);color:var(--ready)}
+  .pill.gap{background:var(--attn-soft);color:var(--attn)}
+  .pill.new{background:var(--accent-soft);color:var(--accent)}
+
+  /* Decision cards */
+  .cards{display:grid;gap:20px}
+  .card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--attn);border-radius:12px;padding:22px 24px;box-shadow:var(--shadow)}
+  .card .tag{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .card .tag .id{font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--attn);background:var(--attn-soft);width:30px;height:30px;display:grid;place-items:center;border-radius:8px;flex:0 0 auto}
+  .card h3{font-size:19px;margin:0}
+  .card .finding{background:var(--surface-2);border-radius:9px;padding:12px 14px;font-size:14.5px;color:var(--ink);margin:12px 0 16px}
+  .card .finding .k{color:var(--attn);font-weight:600}
+  .q{font-size:14.5px;font-weight:600;margin:0 0 10px}
+  .opts{display:grid;gap:8px;margin-bottom:14px}
+  label.opt{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:14.5px;transition:border-color .15s,background .15s}
+  label.opt:hover{border-color:var(--accent)}
+  label.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+  label.opt input{margin-top:3px;accent-color:var(--accent);flex:0 0 auto}
+  label.opt .ot b{font-weight:600}
+  label.opt .ot span{display:block;color:var(--muted);font-size:13px}
+  .notelabel{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.03em;text-transform:uppercase;display:block;margin:0 0 6px}
+  textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:9px;padding:11px 13px;font-family:inherit;font-size:14.5px;line-height:1.5;resize:vertical;min-height:70px}
+  textarea:focus,label.opt:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+
+  /* Export bar */
+  .export{position:sticky;bottom:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:8px 0 4px}
+  .export .status{font-size:13.5px;color:var(--muted)}
+  .export .status b{color:var(--ink)}
+  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  button.act{font-family:inherit;font-size:14px;font-weight:600;padding:11px 18px;border-radius:9px;border:1px solid var(--accent);background:var(--accent);color:#241a06;cursor:pointer;transition:transform .08s,filter .15s}
+  button.act.ghost{background:transparent;color:var(--accent)}
+  button.act:hover{filter:brightness(.95)}
+  button.act:active{transform:translateY(1px)}
+  button.act:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  details.evidence{margin-top:16px;border:1px solid var(--border);border-radius:10px;background:var(--surface);overflow:hidden}
+  details.evidence summary{cursor:pointer;padding:13px 16px;font-size:14px;font-weight:600;list-style:none}
+  details.evidence summary::-webkit-details-marker{display:none}
+  details.evidence summary::before{content:"▸ ";color:var(--accent)}
+  details.evidence[open] summary::before{content:"▾ "}
+  details.evidence .body{padding:0 16px 8px}
+  .foot{padding:32px 0 60px;color:var(--muted);font-size:13px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Mustard Fashion · Shopify Migration</p>
+    <h1>Store reorganisation: categories &amp; collections</h1>
+    <p class="lede">The catalogue and pages are live on Shopify. Before we restructure the
+      menu into your new nine-category layout, a few product-classification calls are yours
+      to make. This brief shows where things stand and captures your decisions.</p>
+    <div class="meta">
+      <span><b>Prepared for</b> the store owner</span>
+      <span><b>Status</b> catalogue migrated · reorg pending your input</span>
+      <span><b>Decisions needed</b> 6</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Where we are</p>
+    <h2>At a glance</h2>
+    <p class="section-sub">Everything below is already on the store. The reorganisation is a
+      restructuring of how products are grouped and shown in the menu — not a re-migration.</p>
+    <div class="tiles">
+      <div class="tile good"><span class="n mono">1,475</span><div class="l">Products live on Shopify</div></div>
+      <div class="tile"><span class="n mono">31</span><div class="l">Collections currently</div></div>
+      <div class="tile good"><span class="n mono">7</span><div class="l">Info pages + My Account done</div></div>
+      <div class="tile"><span class="n mono">9</span><div class="l">Target categories</div></div>
+      <div class="tile flag"><span class="n mono">6</span><div class="l">Decisions needed from you</div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">No decision needed</p>
+    <h2>Ready to build now</h2>
+    <p class="section-sub">These map cleanly from the current catalogue — I can set them up as
+      soon as you give the go-ahead, independent of the open questions.</p>
+    <ul class="ready">
+      <li><span class="ck">✓</span><div><b>New Arrivals</b> — products already carry a “New Arrivals” label, so this becomes one automatic collection. <span class="c">No manual work.</span></div></li>
+      <li><span class="ck">✓</span><div><b>Dresses</b> — 154 products; promote to its own top-level category.</div></li>
+      <li><span class="ck">✓</span><div><b>Tops &amp; Tunics</b> (344), <b>Shirts</b> (178), <b>Kurta</b> (375), <b>Dupattas</b> (64), <b>Jeans</b> (27) — reused as-is.</div></li>
+      <li><span class="ck">✓</span><div><b>Festive</b> (151) and <b>Winterwear</b> (125) — kept as single categories; their sub-menus removed as you requested.</div></li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">The plan</p>
+    <h2>Target structure</h2>
+    <p class="section-sub">Your nine categories, and how each maps to what exists today.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Category</th><th>Sub-collections</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="cat">Sale</td><td>All · one per category</td><td><span class="pill gap">needs setup</span></td></tr>
+        <tr><td class="cat">New Arrivals</td><td class="sub">—</td><td><span class="pill reuse">ready</span></td></tr>
+        <tr><td class="cat">Kurta &amp; Kurta Sets</td><td>All · Kurta · Kurta Sets · Dupattas</td><td><span class="pill gap">partly</span></td></tr>
+        <tr><td class="cat">Tops</td><td>All · Tops &amp; Tunics · Shirts</td><td><span class="pill new">narrow down</span></td></tr>
+        <tr><td class="cat">Dresses</td><td class="sub">—</td><td><span class="pill reuse">ready</span></td></tr>
+        <tr><td class="cat">Co-ord sets</td><td class="sub">—</td><td><span class="pill gap">needs filling</span></td></tr>
+        <tr><td class="cat">Bottom Wear</td><td>All · Trousers · Pants &amp; Palazzo · Jeans</td><td><span class="pill new">confirm grouping</span></td></tr>
+        <tr><td class="cat">Festive</td><td class="sub">—</td><td><span class="pill reuse">ready</span></td></tr>
+        <tr><td class="cat">Winterwear</td><td class="sub">—</td><td><span class="pill reuse">ready</span></td></tr>
+      </tbody>
+    </table></div>
+    <details class="evidence">
+      <summary>See current collections &amp; product counts</summary>
+      <div class="body"><div class="tablewrap" style="border:0"><table style="min-width:420px">
+        <thead><tr><th>Collection</th><th style="text-align:right">Products</th></tr></thead>
+        <tbody>
+          <tr><td>Topwear (catch-all)</td><td class="mono" style="text-align:right">1,052</td></tr>
+          <tr><td>Kurtas &amp; Kurtis</td><td class="mono" style="text-align:right">375</td></tr>
+          <tr><td>Tops &amp; Tunics</td><td class="mono" style="text-align:right">344</td></tr>
+          <tr><td>Bottom wear</td><td class="mono" style="text-align:right">196</td></tr>
+          <tr><td>Shirts</td><td class="mono" style="text-align:right">178</td></tr>
+          <tr><td>Dresses</td><td class="mono" style="text-align:right">154</td></tr>
+          <tr><td>Festival Collection</td><td class="mono" style="text-align:right">151</td></tr>
+          <tr><td>Winterwear</td><td class="mono" style="text-align:right">125</td></tr>
+          <tr><td>Palazzo + Palazzos (duplicate)</td><td class="mono" style="text-align:right">130</td></tr>
+          <tr><td>Trousers &amp; Pants</td><td class="mono" style="text-align:right">67</td></tr>
+          <tr><td>Dupatta &amp; Stole</td><td class="mono" style="text-align:right">64</td></tr>
+          <tr><td>Jeans</td><td class="mono" style="text-align:right">27</td></tr>
+          <tr><td>Kaftan</td><td class="mono" style="text-align:right">11</td></tr>
+          <tr><td>Co-Ords</td><td class="mono" style="text-align:right">1</td></tr>
+          <tr><td>Kurta Set</td><td class="mono" style="text-align:right">0</td></tr>
+          <tr><td>Smaller / winter sub-collections</td><td class="sub" style="text-align:right">15 more</td></tr>
+        </tbody>
+      </table></div></div>
+    </details>
+  </section>
+
+  <section>
+    <p class="eyebrow">Your input</p>
+    <h2>Six decisions to make</h2>
+    <p class="section-sub">Pick an option and/or add a note for each. Your answers are saved in
+      this page as you go — use the buttons at the bottom to copy or download them for me.</p>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="tag"><span class="id">A</span></div>
+        <h3>Sale — how should discounted items be identified?</h3>
+        <div class="finding"><span class="k">Finding:</span> There are no Sale collections yet,
+          and <b>the sale prices did not carry over</b> from the old site — every product shows only
+          its regular price. We need a way to know what’s “on sale” before we can build the Sale menu.</div>
+        <p class="q">How do you want to handle Sale?</p>
+        <div class="opts" data-q="A">
+          <label class="opt"><input type="radio" name="A" value="Re-import WC sale prices → automatic Sale collections"><span class="ot"><b>Re-import the old sale prices</b><span>Sale collections then build themselves and stay accurate. Best if the old site still has the sale prices.</span></span></label>
+          <label class="opt"><input type="radio" name="A" value="Tag sale items manually / by rule"><span class="ot"><b>Mark sale items ourselves</b><span>We tag which products are on sale (a manual or rule-based list).</span></span></label>
+          <label class="opt"><input type="radio" name="A" value="Defer Sale to a later phase"><span class="ot"><b>Do Sale later</b><span>Launch the other eight categories first; add Sale in a later round.</span></span></label>
+        </div>
+        <span class="notelabel">Notes</span>
+        <textarea data-note="A" placeholder="e.g. discount % rules, which categories go on sale…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="tag"><span class="id">B</span></div>
+        <h3>Kurta Sets — how do we tell a “set” apart?</h3>
+        <div class="finding"><span class="k">Finding:</span> <b>Nothing is currently marked as a kurta set</b>
+          — the Kurta Set collection is empty and no product name says “set”. To build the Kurta Sets
+          sub-menu we need a way to recognise them.</div>
+        <p class="q">How should I identify kurta sets?</p>
+        <div class="opts" data-q="B">
+          <label class="opt"><input type="radio" name="B" value="By SKU / style-code pattern"><span class="ot"><b>By a SKU or style-code pattern</b><span>If sets share a code convention, tell me the pattern.</span></span></label>
+          <label class="opt"><input type="radio" name="B" value="Owner provides a list of set products"><span class="ot"><b>I’ll provide a list</b><span>You send the SKUs/products that are sets.</span></span></label>
+          <label class="opt"><input type="radio" name="B" value="Re-classify from existing Kurtas manually"><span class="ot"><b>Pull them out of Kurtas</b><span>We review the Kurtas collection and move the sets.</span></span></label>
+        </div>
+        <span class="notelabel">Notes (pattern, list location, etc.)</span>
+        <textarea data-note="B" placeholder="e.g. SKUs ending in -SET, or a spreadsheet you’ll share…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="tag"><span class="id">C</span></div>
+        <h3>Tops — what belongs, and where do the leftovers go?</h3>
+        <div class="finding"><span class="k">Finding:</span> Today’s “Topwear” is a 1,052-product
+          catch-all that also holds kurtas, dresses, kaftans and more. New “Tops” = Tops&nbsp;&amp;&nbsp;Tunics
+          + Shirts. That leaves <b>Kaftan, Shrugs, Sweaters, T-Shirts</b> to place.</div>
+        <p class="q">Where should the leftover types go?</p>
+        <div class="opts" data-q="C">
+          <label class="opt"><input type="radio" name="C" value="Kaftan→Dresses, Sweaters→Winterwear, drop empty Shrugs/T-Shirts"><span class="ot"><b>Redistribute sensibly</b><span>Kaftan → Dresses, Sweaters → Winterwear, and retire the empty Shrugs / T-Shirts.</span></span></label>
+          <label class="opt"><input type="radio" name="C" value="Keep all leftovers inside Tops"><span class="ot"><b>Keep them under Tops</b><span>Tops stays broad and includes them.</span></span></label>
+          <label class="opt"><input type="radio" name="C" value="Custom placement — see notes"><span class="ot"><b>Something else</b><span>Tell me item-by-item below.</span></span></label>
+        </div>
+        <span class="notelabel">Notes</span>
+        <textarea data-note="C" placeholder="e.g. Kaftan should be its own thing under Dresses…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="tag"><span class="id">D</span></div>
+        <h3>Kurta Sets vs Co-ord sets — the split rule</h3>
+        <div class="finding"><span class="k">Finding:</span> The Co-ord sets category has just
+          <b>1 product</b>, yet ~45 products have “co-ord” in their name (currently mis-filed). You noted
+          many kurta sets belong under Co-ord sets alongside western co-ords. We need the dividing rule.</div>
+        <p class="q">How do sets divide between the two categories?</p>
+        <div class="opts" data-q="D">
+          <label class="opt"><input type="radio" name="D" value="Ethnic sets → Kurta & Kurta Sets; western co-ords → Co-ord sets"><span class="ot"><b>Ethnic vs western</b><span>Ethnic/kurta sets stay in Kurta&nbsp;&amp;&nbsp;Kurta&nbsp;Sets; western co-ords go to Co-ord sets.</span></span></label>
+          <label class="opt"><input type="radio" name="D" value="All sets appear in both categories"><span class="ot"><b>Show sets in both</b><span>Every set lists under Kurta Sets and Co-ord sets.</span></span></label>
+          <label class="opt"><input type="radio" name="D" value="Custom rule — see notes"><span class="ot"><b>Different rule</b><span>Describe it below.</span></span></label>
+        </div>
+        <span class="notelabel">Notes</span>
+        <textarea data-note="D" placeholder="e.g. anything with a bottom (pant/skirt) = co-ord set…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="tag"><span class="id">E</span></div>
+        <h3>Bottom Wear — confirm the groupings</h3>
+        <div class="finding"><span class="k">Finding:</span> New Bottom Wear = Trousers · Pants&nbsp;&amp;&nbsp;Palazzo · Jeans.
+          Today there are extra types (Slacks, Capris, Leggings&nbsp;&amp;&nbsp;Jeggings, Skirts, Dhotis) and a
+          <b>duplicated Palazzo collection</b> to tidy up.</div>
+        <p class="q">What goes into “Pants &amp; Palazzo”, and what about the extras?</p>
+        <div class="opts" data-q="E">
+          <label class="opt"><input type="radio" name="E" value="Pants & Palazzo = Palazzo + Slacks + Capris; drop Skirts/Dhotis/Leggings from menu"><span class="ot"><b>Merge pants-like items</b><span>Pants&nbsp;&amp;&nbsp;Palazzo = Palazzo + Slacks + Capris; keep Skirts/Dhotis/Leggings off the menu.</span></span></label>
+          <label class="opt"><input type="radio" name="E" value="Pants & Palazzo = Palazzo only; keep others as-is elsewhere"><span class="ot"><b>Palazzo only</b><span>Pants&nbsp;&amp;&nbsp;Palazzo = Palazzo; leave the rest as they are.</span></span></label>
+          <label class="opt"><input type="radio" name="E" value="Custom grouping — see notes"><span class="ot"><b>Something else</b><span>Spell out the groupings below.</span></span></label>
+        </div>
+        <span class="notelabel">Notes</span>
+        <textarea data-note="E" placeholder="e.g. Leggings should stay visible under Bottom Wear…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="tag"><span class="id">F</span></div>
+        <h3>Unused sub-collections — keep or remove?</h3>
+        <div class="finding"><span class="k">Finding:</span> Flattening Festive/Winterwear and
+          narrowing Tops leaves ~15 small sub-collections off the menu (winter kurti, jackets, shrugs,
+          skirts, etc.).</div>
+        <p class="q">What should happen to those hidden collections?</p>
+        <div class="opts" data-q="F">
+          <label class="opt"><input type="radio" name="F" value="Keep them hidden but reachable (SEO-friendly)"><span class="ot"><b>Keep hidden</b><span>Off the menu but still reachable by link — preserves search/SEO value.</span></span></label>
+          <label class="opt"><input type="radio" name="F" value="Delete them entirely"><span class="ot"><b>Delete them</b><span>Remove the collections completely for a clean store.</span></span></label>
+        </div>
+        <span class="notelabel">Notes</span>
+        <textarea data-note="F" placeholder="e.g. keep winter ones, delete the empty ones…"></textarea>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="export">
+    <div class="status" id="status">Answered <b id="count">0</b> of 6</div>
+    <div class="btns">
+      <button class="act ghost" id="copyBtn">Copy answers</button>
+      <button class="act" id="dlBtn">Download answers</button>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>Your responses stay in this page (and in your browser) until you copy or download them —
+      nothing is sent anywhere automatically. Send the copied text or the downloaded file back to
+      complete the reorganisation.</p>
+  </div>
+
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  (function(){
+    var KEY="mf_reorg_v1";
+    var QS=["A","B","C","D","E","F"];
+    var TITLES={A:"Sale identification",B:"Kurta Sets identification",C:"Tops scope / leftovers",
+      D:"Kurta Sets vs Co-ord sets",E:"Bottom Wear groupings",F:"Unused sub-collections"};
+
+    function saved(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+    function persist(){
+      var d={};
+      QS.forEach(function(q){
+        var r=document.querySelector('input[name="'+q+'"]:checked');
+        var n=document.querySelector('textarea[data-note="'+q+'"]');
+        d[q]={choice:r?r.value:"",note:n?n.value:""};
+      });
+      localStorage.setItem(KEY,JSON.stringify(d));
+      updateCount(d);
+      return d;
+    }
+    function restore(){
+      var d=saved();
+      QS.forEach(function(q){
+        if(!d[q])return;
+        if(d[q].choice){
+          var r=document.querySelector('input[name="'+q+'"][value="'+CSS.escape(d[q].choice)+'"]');
+          if(r)r.checked=true;
+        }
+        var n=document.querySelector('textarea[data-note="'+q+'"]');
+        if(n&&d[q].note)n.value=d[q].note;
+      });
+      updateCount(d);
+    }
+    function updateCount(d){
+      var c=0;QS.forEach(function(q){if(d[q]&&(d[q].choice||d[q].note.trim()))c++;});
+      document.getElementById("count").textContent=c;
+    }
+    function buildText(){
+      var d=persist();
+      var out="MUSTARD FASHION — Store reorganisation decisions\n";
+      out+="Date: "+new Date().toLocaleDateString()+"\n";
+      out+="========================================\n\n";
+      QS.forEach(function(q){
+        out+="["+q+"] "+TITLES[q]+"\n";
+        out+="  Choice: "+(d[q].choice||"(not answered)")+"\n";
+        if(d[q].note&&d[q].note.trim())out+="  Notes : "+d[q].note.trim()+"\n";
+        out+="\n";
+      });
+      return out;
+    }
+    function toast(msg){
+      var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+      clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show");},2200);
+    }
+
+    document.addEventListener("input",persist);
+    document.addEventListener("change",persist);
+
+    document.getElementById("copyBtn").addEventListener("click",function(){
+      var txt=buildText();
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){toast("Answers copied to clipboard");},
+          function(){fallbackCopy(txt);});
+      }else{fallbackCopy(txt);}
+    });
+    function fallbackCopy(txt){
+      var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);
+      ta.select();try{document.execCommand("copy");toast("Answers copied");}catch(e){toast("Press Ctrl/Cmd+C to copy");}
+      document.body.removeChild(ta);
+    }
+    document.getElementById("dlBtn").addEventListener("click",function(){
+      var txt=buildText();
+      var blob=new Blob([txt],{type:"text/plain"});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement("a");a.href=url;a.download="mustard-reorg-decisions.txt";
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(url);},1000);
+      toast("Downloaded");
+    });
+
+    restore();
+  })();
+</script>
+
+</body>
+</html>
