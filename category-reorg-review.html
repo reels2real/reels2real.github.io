@@ -1,0 +1,751 @@
+<title>Mustard Fashion — Category Reorganisation Review</title>
+
+<style>
+  :root{
+    --ink:#191A17; --ink-2:#3C3E39; --ink-3:#6B6E66; --ink-4:#93968D;
+    --paper:#F4F5F1; --card:#FFFFFF; --rule:#DEE0D8; --rule-2:#E9EAE4;
+    --bar:#1F211C; --bar-ink:#F2F3ED; --bar-rule:#3A3D35;
+    --brass:#B2942F; --brass-ink:#6E5B18; --brass-wash:#F6F0DA;
+    --keep:#4A7355; --keep-wash:#E6EFE7;
+    --gap:#A8452F; --gap-wash:#F8E7E2;
+    --dead:#83867E; --dead-wash:#ECEDE8;
+    --shadow:0 1px 2px rgba(25,26,23,.05), 0 8px 22px -12px rgba(25,26,23,.22);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ink:#EDEEE8; --ink-2:#C3C6BC; --ink-3:#8F938A; --ink-4:#6C7067;
+      --paper:#14150F; --card:#1D1F19; --rule:#2E3129; --rule-2:#262922;
+      --bar:#0B0C08; --bar-ink:#EDEEE8; --bar-rule:#282B23;
+      --brass:#D6B854; --brass-ink:#E7CE7A; --brass-wash:#2C2716;
+      --keep:#7FB08B; --keep-wash:#1B2A1F; --gap:#DE8570; --gap-wash:#2F1C17;
+      --dead:#7A7E74; --dead-wash:#23261F;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.65);
+    }
+  }
+  :root[data-theme="light"]{
+    --ink:#191A17; --ink-2:#3C3E39; --ink-3:#6B6E66; --ink-4:#93968D;
+    --paper:#F4F5F1; --card:#FFFFFF; --rule:#DEE0D8; --rule-2:#E9EAE4;
+    --bar:#1F211C; --bar-ink:#F2F3ED; --bar-rule:#3A3D35;
+    --brass:#B2942F; --brass-ink:#6E5B18; --brass-wash:#F6F0DA;
+    --keep:#4A7355; --keep-wash:#E6EFE7; --gap:#A8452F; --gap-wash:#F8E7E2;
+    --dead:#83867E; --dead-wash:#ECEDE8;
+    --shadow:0 1px 2px rgba(25,26,23,.05), 0 8px 22px -12px rgba(25,26,23,.22);
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDEEE8; --ink-2:#C3C6BC; --ink-3:#8F938A; --ink-4:#6C7067;
+    --paper:#14150F; --card:#1D1F19; --rule:#2E3129; --rule-2:#262922;
+    --bar:#0B0C08; --bar-ink:#EDEEE8; --bar-rule:#282B23;
+    --brass:#D6B854; --brass-ink:#E7CE7A; --brass-wash:#2C2716;
+    --keep:#7FB08B; --keep-wash:#1B2A1F; --gap:#DE8570; --gap-wash:#2F1C17;
+    --dead:#7A7E74; --dead-wash:#23261F;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.65);
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1340px;margin:0 auto;padding:clamp(26px,4.5vw,58px) clamp(16px,3.5vw,36px) 90px;
+    display:flex;flex-direction:column;gap:clamp(40px,5.5vw,70px);}
+
+  .mast{display:flex;flex-direction:column;gap:13px;border-bottom:2px solid var(--ink);padding-bottom:22px;}
+  .kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brass-ink);display:flex;gap:9px;flex-wrap:wrap;}
+  .kicker b{color:var(--ink-3);font-weight:400;}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.8vw,48px);line-height:1.07;
+    letter-spacing:-.015em;margin:0;text-wrap:balance;}
+  h1 em{font-style:italic;color:var(--brass);}
+  .standfirst{font-size:clamp(15px,1.4vw,17.5px);color:var(--ink-2);max-width:70ch;text-wrap:pretty;}
+  code{font-family:var(--mono);font-size:.86em;background:var(--rule-2);padding:.1em .38em;border-radius:3px;
+    color:var(--ink-2);}
+
+  section{display:flex;flex-direction:column;gap:17px;scroll-margin-top:20px;}
+  .shead{display:flex;flex-direction:column;gap:6px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(23px,3vw,32px);margin:0;letter-spacing:-.012em;
+    text-wrap:balance;}
+  h3{font-family:var(--serif);font-weight:400;font-size:clamp(19px,2.2vw,24px);margin:0;letter-spacing:-.01em;}
+  .snote{font-size:14.5px;color:var(--ink-3);max-width:76ch;text-wrap:pretty;}
+
+  /* contents */
+  .toc{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:15px 17px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;}
+  .toc .tl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);}
+  .toc ol{margin:0;padding-left:19px;display:flex;flex-direction:column;gap:4px;font-size:14px;}
+  .toc a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--rule);}
+  .toc a:hover,.toc a:focus{color:var(--brass-ink);border-bottom-color:var(--brass);}
+  .toc a:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px;}
+
+  /* tree cards */
+  .grid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start;}
+  .branch{background:var(--card);border:1px solid var(--rule);border-radius:9px;box-shadow:var(--shadow);
+    overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+  .branch.wide{grid-column:1/-1;}
+  .broot{display:flex;align-items:baseline;gap:9px;padding:12px 15px;border-bottom:1px solid var(--rule-2);
+    background:linear-gradient(0deg,var(--rule-2),transparent);}
+  .broot .nm{font-family:var(--serif);font-size:18px;}
+  .broot .sl{font-family:var(--mono);font-size:10px;color:var(--ink-4);}
+  .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-3);margin-left:auto;
+    white-space:nowrap;}
+  .n.zero{color:var(--dead);}
+  ul.kids{list-style:none;margin:0;padding:4px 15px 13px;display:flex;flex-direction:column;}
+  ul.kids li{position:relative;padding:5px 0 5px 19px;display:flex;align-items:baseline;gap:8px;
+    border-left:1px solid var(--rule);min-width:0;}
+  ul.kids li::before{content:"";position:absolute;left:0;top:14px;width:11px;height:1px;background:var(--rule);}
+  ul.kids li:last-child{border-left-color:transparent;}
+  ul.kids li:last-child::after{content:"";position:absolute;left:0;top:0;height:14px;width:1px;background:var(--rule);}
+  ul.kids .nm{font-size:14px;color:var(--ink-2);}
+  ul.kids .sl{font-family:var(--mono);font-size:9.5px;color:var(--ink-4);}
+  li.flag .nm{color:var(--gap);font-weight:600;}
+  li.dead .nm{color:var(--dead);text-decoration:line-through;text-decoration-thickness:1px;}
+
+  /* menus side by side */
+  .compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,24px);align-items:start;}
+  @media (max-width:940px){ .compare{grid-template-columns:minmax(0,1fr);} }
+  .side{display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .sidehead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .sidehead .tg{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+    padding:3px 8px;border-radius:3px;border:1px solid;}
+  .tg-now{color:var(--ink-3);border-color:var(--rule);background:var(--rule-2);}
+  .tg-new{color:var(--brass-ink);border-color:var(--brass);background:var(--brass-wash);}
+  .metrics{display:flex;gap:13px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-3);
+    font-variant-numeric:tabular-nums;}
+  .metrics b{color:var(--ink);font-weight:600;}
+  .frame{border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card);
+    box-shadow:var(--shadow);display:flex;flex-direction:column;}
+  .navbar{background:var(--bar);padding:0 10px;display:flex;align-items:stretch;gap:1px;overflow-x:auto;}
+  .navbar .brand{font-family:var(--serif);color:var(--bar-ink);font-size:13px;padding:13px 12px 13px 4px;
+    white-space:nowrap;opacity:.5;}
+  .navbar .it{color:var(--bar-ink);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:14px 9px;white-space:nowrap;position:relative;opacity:.84;}
+  .navbar .it.on{opacity:1;}
+  .navbar .it.on::after{content:"";position:absolute;left:9px;right:9px;bottom:0;height:2px;background:var(--brass);}
+  .navbar .it .car{font-size:8px;opacity:.5;margin-left:3px;vertical-align:middle;}
+  .navbar .it.isnew{color:var(--brass);}
+  .panel{padding:14px 15px 16px;display:flex;flex-direction:column;gap:11px;border-top:1px solid var(--bar-rule);}
+  .plabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);}
+  .drops{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:9px;}
+  .drop{border:1px solid var(--rule);border-radius:7px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;
+    position:relative;background:var(--card);min-width:0;}
+  .drop::before{content:"";position:absolute;top:-1px;left:11px;right:11px;height:2px;background:var(--brass);
+    border-radius:0 0 2px 2px;}
+  .drop.flat{border-style:dashed;}
+  .drop.flat::before{background:var(--rule);}
+  .drop.wide{grid-column:1/-1;}
+  .drop .dh{font-size:12.5px;font-weight:650;display:flex;gap:6px;align-items:baseline;padding-bottom:4px;
+    border-bottom:1px solid var(--rule-2);}
+  .drop .dh .cn{font-family:var(--mono);font-size:9.5px;color:var(--ink-4);font-weight:400;margin-left:auto;
+    font-variant-numeric:tabular-nums;}
+  .drop .lf{font-size:11.5px;color:var(--ink-2);display:flex;gap:6px;align-items:baseline;min-width:0;}
+  .drop .lf .cn{font-family:var(--mono);font-size:9.5px;color:var(--ink-4);margin-left:auto;
+    font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .drop .lf.sub{padding-left:9px;border-left:1px solid var(--rule);}
+  .drop .lf.mark{color:var(--gap);}
+  .drop .lf.zero .cn{color:var(--dead);}
+  .drop .noch{font-size:11px;color:var(--ink-4);font-style:italic;}
+  .drop .l3{font-family:var(--mono);font-size:9.5px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;
+    margin-top:3px;}
+  .tagpill{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 4px;
+    border-radius:2px;background:var(--brass-wash);color:var(--brass-ink);border:1px solid var(--brass);}
+  .miss{padding:10px 12px;border:1px dashed var(--gap);border-radius:7px;background:var(--gap-wash);
+    font-size:12px;color:var(--ink-2);}
+  .miss b{color:var(--gap);}
+
+  /* tables */
+  .scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:9px;background:var(--card);box-shadow:var(--shadow);}
+  table{border-collapse:collapse;width:100%;min-width:700px;font-size:13.5px;}
+  thead th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-4);font-weight:400;padding:11px 14px;border-bottom:1px solid var(--rule);background:var(--rule-2);}
+  td{padding:9px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top;color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.k{color:var(--ink);font-weight:600;}
+  td.k .sl{font-family:var(--mono);font-size:9.5px;color:var(--ink-4);display:block;font-weight:400;}
+  td .arrow{color:var(--brass);font-family:var(--mono);}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:var(--ink-3);white-space:nowrap;}
+  tbody tr.band td{background:var(--rule-2);font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--ink-3);padding:8px 14px;}
+  .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;
+    border-radius:3px;border:1px solid;white-space:nowrap;}
+  .c-keep{background:var(--keep-wash);color:var(--keep);border-color:var(--keep);}
+  .c-gap{background:var(--gap-wash);color:var(--gap);border-color:var(--gap);}
+  .c-new{background:var(--brass-wash);color:var(--brass-ink);border-color:var(--brass);}
+  .c-dead{background:var(--dead-wash);color:var(--dead);border-color:var(--dead);}
+  a.dref{color:var(--gap);font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-decoration:none;
+    border:1px solid var(--gap);background:var(--gap-wash);padding:1px 5px;border-radius:3px;white-space:nowrap;}
+  a.dref:hover,a.dref:focus{background:var(--gap);color:var(--paper);}
+  a.dref:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+  a.dref.ok{color:var(--keep);border-color:var(--keep);background:var(--keep-wash);}
+  a.dref.ok:hover,a.dref.ok:focus{background:var(--keep);color:var(--paper);}
+
+  /* decisions */
+  .dlist{display:flex;flex-direction:column;gap:14px;}
+  .dcard{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--gap);border-radius:9px;
+    padding:16px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);scroll-margin-top:16px;}
+  .dcard.done{border-left-color:var(--keep);}
+  .dcard.block{border-left-color:var(--brass);}
+  .dhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .dnum{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gap);
+    border:1px solid var(--gap);background:var(--gap-wash);padding:2px 7px;border-radius:3px;}
+  .dcard.done .dnum{color:var(--keep);border-color:var(--keep);background:var(--keep-wash);}
+  .dcard.block .dnum{color:var(--brass-ink);border-color:var(--brass);background:var(--brass-wash);}
+  .dhead h3{font-size:clamp(16px,1.9vw,20px);}
+  .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);
+    margin-left:auto;border:1px solid var(--rule);padding:2px 7px;border-radius:3px;white-space:nowrap;}
+  .dcard p{margin:0;font-size:14px;color:var(--ink-2);text-wrap:pretty;}
+  .dcard ul.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .dcard ul.opts li{font-size:13.5px;color:var(--ink-2);padding-left:20px;position:relative;text-wrap:pretty;}
+  .dcard ul.opts li::before{content:"○";position:absolute;left:2px;color:var(--ink-4);font-size:11px;top:2px;}
+  .dcard ul.opts li.rec::before{content:"●";color:var(--brass);}
+  .dcard ul.opts li.rec{color:var(--ink);}
+  .warn{font-size:13px;color:var(--ink-2);background:var(--gap-wash);border:1px solid var(--gap);
+    border-radius:6px;padding:9px 12px;text-wrap:pretty;}
+  .dcard.done .warn{background:var(--keep-wash);border-color:var(--keep);}
+
+  .lede{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;}
+  .lede p{margin:0;font-size:14.5px;color:var(--ink-2);text-wrap:pretty;}
+  .lede b{color:var(--ink);}
+
+  footer{border-top:1px solid var(--rule);padding-top:16px;font-family:var(--mono);font-size:11px;
+    color:var(--ink-4);letter-spacing:.04em;display:flex;gap:8px;flex-wrap:wrap;}
+
+  @media print{
+    body{background:#fff;} .wrap{max-width:none;padding:0;gap:28px;}
+    .frame,.dcard,.branch,.scroll,.toc,.lede{box-shadow:none;} section{break-inside:avoid;}
+    .dcard{break-inside:avoid;}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="kicker"><span>Mustard Fashion</span><b>·</b><span>mustardfashion.com</span><b>·</b><span>31 July 2026</span></div>
+    <h1>Category reorganisation — <em>current state, proposal, and the decisions still open</em></h1>
+    <p class="standfirst">A review document. It sets out how the catalogue is organised on the live
+      WooCommerce site today, what the proposed nine-category structure looks like, how every existing
+      menu item maps into it, and which questions have to be answered before any of it is built.
+      All figures were read directly from the live site on 31 July 2026.</p>
+  </header>
+
+  <div class="toc">
+    <div class="tl">Contents</div>
+    <ol>
+      <li><a href="#now">Where the catalogue stands today</a></li>
+      <li><a href="#menus">The menu today, and the menu proposed</a></li>
+      <li><a href="#mapping">Mapping — every menu item, and where it goes</a></li>
+      <li><a href="#coverage">Coverage — do all products still have a home?</a></li>
+      <li><a href="#decisions">The seven decisions (D1–D7), in full</a></li>
+    </ol>
+  </div>
+
+  <div class="lede">
+    <p><b>The short version.</b> The proposal is a smaller change than it first appears. WooCommerce
+      already runs a seven-item menu that includes <b>New Arrivals</b> and <b>Kurta Set</b> at top level,
+      so moving to nine is two additions — the substantive changes are that <b>Top wear</b> dissolves into
+      four separate categories and <b>Sale</b> loses a level.</p>
+    <p>Of the seven open questions, <b>two are already answered</b> by the data (D2 and D4 — both turned
+      out to be products that were never migrated, not products that could not be classified), and
+      <b>only three genuinely need the shop owner</b>: D3, D6 and D7. The one real blocker is
+      <b>D1</b>, which is a strategic choice rather than a data question.</p>
+  </div>
+
+  <!-- ================= 1. CURRENT ================= -->
+  <section id="now">
+    <div class="shead">
+      <div class="eyebrow">Section one</div>
+      <h2>Where the catalogue stands today</h2>
+      <p class="snote">Sixty categories in WooCommerce, nine of them at top level. Counts are
+        WooCommerce's own published-product counts. The <b>Sale</b> branch is a parallel mirror of the whole
+        catalogue — every discounted garment is filed twice, once in its real category and once under Sale.</p>
+    </div>
+
+    <div class="grid">
+      <div class="branch">
+        <div class="broot"><span class="nm">Topwear</span><span class="sl">top-wear-women</span><span class="n">1,061</span></div>
+        <ul class="kids">
+          <li><span class="nm">Tops &amp; Tunics</span><span class="n">342</span></li>
+          <li><span class="nm">Kurtas &amp; Kurtis</span><span class="n">301</span></li>
+          <li><span class="nm">Shirts</span><span class="n">178</span></li>
+          <li><span class="nm">Dresses</span><span class="n">157</span></li>
+          <li><span class="nm">Dupatta &amp; Stole</span><span class="n">50</span></li>
+          <li><span class="nm">Kaftan</span><span class="n">11</span></li>
+          <li><span class="nm">Sweaters</span><span class="n">3</span></li>
+          <li class="dead"><span class="nm">Shrugs</span><span class="n zero">0</span></li>
+          <li class="dead"><span class="nm">T-Shirts</span><span class="n zero">0</span></li>
+        </ul>
+      </div>
+
+      <div class="branch">
+        <div class="broot"><span class="nm">Bottom wear</span><span class="sl">bottom-wear-for-women</span><span class="n">187</span></div>
+        <ul class="kids">
+          <li><span class="nm">Palazzo</span><span class="n">82</span></li>
+          <li><span class="nm">Trousers &amp; Pants</span><span class="n">63</span></li>
+          <li><span class="nm">Jeans</span><span class="n">27</span></li>
+          <li><span class="nm">Leggings &amp; Jeggings</span><span class="n">6</span></li>
+          <li><span class="nm">Dhotis</span><span class="n">5</span></li>
+          <li><span class="nm">Slacks</span><span class="n">3</span></li>
+          <li><span class="nm">Skirts</span><span class="n">1</span></li>
+          <li class="dead"><span class="nm">Capris</span><span class="n zero">0</span></li>
+        </ul>
+      </div>
+
+      <div class="branch">
+        <div class="broot"><span class="nm">Festival Collection</span><span class="sl">festival-wear-for-ladies</span><span class="n">152</span></div>
+        <ul class="kids">
+          <li><span class="nm">Kurtas &amp; Kurtis</span><span class="n">70</span></li>
+          <li><span class="nm">Palazzos</span><span class="n">37</span></li>
+          <li><span class="nm">Dupatta &amp; Stole</span><span class="n">26</span></li>
+          <li><span class="nm">Sharara &amp; Garara</span><span class="n">7</span></li>
+          <li><span class="nm">Skirts</span><span class="n">4</span></li>
+          <li><span class="nm">Slacks</span><span class="n">2</span></li>
+          <li class="dead"><span class="nm">Dhotis</span><span class="n zero">0</span></li>
+        </ul>
+      </div>
+
+      <div class="branch">
+        <div class="broot"><span class="nm">Winterwear</span><span class="sl">winter-wear-for-women</span><span class="n">125</span></div>
+        <ul class="kids">
+          <li><span class="nm">Winter Kurti</span><span class="n">43</span></li>
+          <li><span class="nm">Jackets &amp; Coats</span><span class="n">27</span></li>
+          <li><span class="nm">Winter Palazzo</span><span class="n">21</span></li>
+          <li><span class="nm">Winter Shirts</span><span class="n">12</span></li>
+          <li><span class="nm">Winter Tops &amp; Tunics</span><span class="n">9</span></li>
+          <li><span class="nm">Sweaters</span><span class="n">3</span></li>
+        </ul>
+      </div>
+
+      <div class="branch">
+        <div class="broot"><span class="nm">Standing alone</span><span class="sl">top level, no children</span><span class="n">59</span></div>
+        <ul class="kids">
+          <li class="flag"><span class="nm">Kurta Set</span><span class="sl">never migrated</span><span class="n">15</span></li>
+          <li class="flag"><span class="nm">Winter Tops</span><span class="sl">duplicates Winter Tops &amp; Tunics</span><span class="n">10</span></li>
+          <li class="flag"><span class="nm">Co-Ords</span><span class="sl">the tag holds 26</span><span class="n">1</span></li>
+          <li><span class="nm">Uncategorized</span><span class="n">33</span></li>
+        </ul>
+      </div>
+
+      <div class="branch wide">
+        <div class="broot"><span class="nm">Sale</span><span class="sl">a parallel mirror of the catalogue — 21 categories</span><span class="n">1,090</span></div>
+        <ul class="kids">
+          <li><span class="nm">Topwear</span><span class="sl">Kurtas 313 · Tops &amp; Tunics 281 · Shirts 132 · Dresses 122 · Dupattas 20 · Shrugs 0</span><span class="n">866</span></li>
+          <li><span class="nm">Bottom Wear</span><span class="sl">Palazzo 113 · Trousers &amp; Pants 40 · Jeans 29 · Leggings 6</span><span class="n">200</span></li>
+          <li><span class="nm">Festive Wear</span><span class="sl">Festive Topwear 63 · Festive Bottoms 35 · Sharara &amp; Garara 0</span><span class="n">124</span></li>
+          <li class="dead"><span class="nm">Winter Collection</span><span class="sl">Jackets 0 · Sweaters 0 · Winterwear 0</span><span class="n zero">0</span></li>
+          <li class="dead"><span class="nm">Winter Bottoms</span><span class="n zero">0</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="snote"><b>Why this shape causes trouble.</b> Sale is a category tree rather than a price state,
+      so the same garment is filed in two places and the same names recur at several depths — <code>Palazzo</code>
+      exists four times over as unrelated categories. Nothing in the structure marks a two-piece set except the
+      15 products in <b>Kurta Set</b>, which sit on their own at the top level.</p>
+  </section>
+
+  <!-- ================= 2. MENUS ================= -->
+  <section id="menus">
+    <div class="shead">
+      <div class="eyebrow">Section two</div>
+      <h2>The menu today, and the menu proposed</h2>
+      <p class="snote">Left is the live menu on <code>mustardfashion.com</code>, read from the page itself.
+        Right is the proposal.</p>
+    </div>
+
+    <div class="compare">
+      <div class="side">
+        <div class="sidehead"><span class="tg tg-now">Current</span><h3>Seven items, uneven depth</h3></div>
+        <div class="metrics"><span><b>7</b> top-level</span><span><b>4</b> with dropdowns</span>
+          <span><b>48</b> links</span><span><b>3</b> levels under Sale</span></div>
+        <div class="frame">
+          <div class="navbar"><span class="brand">Mustard</span>
+            <span class="it">New Arrivals</span><span class="it">Kurta Set</span>
+            <span class="it on">Top wear <span class="car">▼</span></span>
+            <span class="it">Bottom wear <span class="car">▼</span></span>
+            <span class="it">Festive Collection <span class="car">▼</span></span>
+            <span class="it">Winterwear <span class="car">▼</span></span>
+            <span class="it">Sale <span class="car">▼</span></span></div>
+          <div class="panel">
+            <div class="plabel">All seven, dropdowns expanded</div>
+            <div class="drops">
+              <div class="drop flat"><div class="dh">New Arrivals <span class="cn">157</span></div>
+                <div class="noch">flat · driven by a <span class="tagpill">tag</span>, not a category</div></div>
+              <div class="drop flat"><div class="dh">Kurta Set <span class="cn">15</span></div>
+                <div class="noch">flat · already at top level</div></div>
+              <div class="drop"><div class="dh">Top wear <span class="cn">1061</span></div>
+                <div class="lf">Dresses <span class="cn">157</span></div>
+                <div class="lf">Kurtas &amp; Kurtis <span class="cn">301</span></div>
+                <div class="lf">Dupatta &amp; Stole <span class="cn">50</span></div>
+                <div class="lf">Tops &amp; Tunics <span class="cn">342</span></div>
+                <div class="lf">Shirts <span class="cn">178</span></div>
+                <div class="lf mark">Co-Ord Sets <span class="tagpill">tag</span><span class="cn">26</span></div>
+                <div class="lf">View All</div></div>
+              <div class="drop"><div class="dh">Bottom wear <span class="cn">187</span></div>
+                <div class="lf">Trousers &amp; Pants <span class="cn">63</span></div>
+                <div class="lf">Palazzo <span class="cn">82</span></div>
+                <div class="lf">Leggings &amp; Jeggings <span class="cn">6</span></div>
+                <div class="lf">Jeans <span class="cn">27</span></div>
+                <div class="lf">View All</div></div>
+              <div class="drop"><div class="dh">Festive Collection <span class="cn">152</span></div>
+                <div class="lf">Kurtas &amp; Kurtis <span class="cn">70</span></div>
+                <div class="lf">Palazzos <span class="cn">37</span></div>
+                <div class="lf">Dupattas <span class="cn">26</span></div>
+                <div class="lf">Skirts <span class="cn">4</span></div>
+                <div class="lf">Sharara &amp; Garara <span class="cn">7</span></div>
+                <div class="lf">View All</div></div>
+              <div class="drop"><div class="dh">Winterwear <span class="cn">125</span></div>
+                <div class="lf">Jackets &amp; Coats <span class="cn">27</span></div>
+                <div class="lf">Winter Shirts <span class="cn">12</span></div>
+                <div class="lf">Winter Kurti <span class="cn">43</span></div>
+                <div class="lf">Winter Tops &amp; Tunics <span class="cn">9</span></div>
+                <div class="lf">Winter Palazzo <span class="cn">21</span></div>
+                <div class="lf">Sweaters <span class="cn">3</span></div>
+                <div class="lf">View All</div></div>
+              <div class="drop wide"><div class="dh">Sale <span class="cn">1090</span></div>
+                <div class="l3">Three levels — the only branch this deep</div>
+                <div class="lf">Topwear <span class="cn">866</span></div>
+                <div class="lf sub">Kurtas &amp; Kurtis <span class="cn">313</span></div>
+                <div class="lf sub">Dresses <span class="cn">122</span></div>
+                <div class="lf sub">Tops &amp; Tunics <span class="cn">281</span></div>
+                <div class="lf sub">Shirts <span class="cn">132</span></div>
+                <div class="lf sub">Dupattas <span class="cn">20</span></div>
+                <div class="lf sub zero">Shrugs <span class="cn">0</span></div>
+                <div class="lf">Bottom Wear <span class="cn">200</span></div>
+                <div class="lf sub">Palazzo <span class="cn">113</span></div>
+                <div class="lf sub">Trousers &amp; Pants <span class="cn">40</span></div>
+                <div class="lf sub">Jeans <span class="cn">29</span></div>
+                <div class="lf sub">Leggings &amp; Jeggings <span class="cn">6</span></div>
+                <div class="lf">Festive Wear <span class="cn">124</span></div>
+                <div class="lf sub">Festive Topwear <span class="cn">63</span></div>
+                <div class="lf sub">Festive Bottoms <span class="cn">35</span></div>
+                <div class="lf sub zero">Sharara &amp; Garara <span class="cn">0</span></div></div>
+            </div>
+            <div class="miss"><b>Not in this menu at all —</b> 9 categories holding 69 products:
+              Uncategorized 33 · Kaftan 11 · Winter Tops 10 · Dhotis 5 · Slacks 3 · Sweaters 3 ·
+              Slacks (Festive) 2 · Co-Ords 1 · Skirts 1.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="sidehead"><span class="tg tg-new">Proposed</span><h3>Nine items, one level</h3></div>
+        <div class="metrics"><span><b>9</b> top-level</span><span><b>4</b> with dropdowns</span>
+          <span><b>~26</b> links</span><span><b>2</b> levels everywhere</span></div>
+        <div class="frame">
+          <div class="navbar"><span class="brand">Mustard</span>
+            <span class="it on">Sale <span class="car">▼</span></span>
+            <span class="it">New Arrivals</span>
+            <span class="it isnew">Kurta &amp; Kurta Sets <span class="car">▼</span></span>
+            <span class="it">Tops <span class="car">▼</span></span>
+            <span class="it">Dresses</span>
+            <span class="it isnew">Co-ord sets</span>
+            <span class="it">Bottom Wear <span class="car">▼</span></span>
+            <span class="it">Festive</span>
+            <span class="it">Winterwear</span></div>
+          <div class="panel">
+            <div class="plabel">All nine, dropdowns expanded</div>
+            <div class="drops">
+              <div class="drop"><div class="dh">Sale <span class="cn">1090</span></div>
+                <div class="lf">All</div><div class="lf">…one per category <span class="cn">×7</span></div>
+                <div class="l3">flattened from 3 levels to 2</div></div>
+              <div class="drop flat"><div class="dh">New Arrivals <span class="cn">157</span></div>
+                <div class="noch">flat · unchanged</div></div>
+              <div class="drop"><div class="dh">Kurta &amp; Kurta Sets</div>
+                <div class="lf">All <span class="cn">386</span></div>
+                <div class="lf">Kurta <span class="cn">301</span></div>
+                <div class="lf mark">Kurta Sets <span class="cn">15</span></div>
+                <div class="lf">Dupattas <span class="cn">50</span></div></div>
+              <div class="drop"><div class="dh">Tops</div>
+                <div class="lf">All <span class="cn">520</span></div>
+                <div class="lf">Tops &amp; Tunics <span class="cn">342</span></div>
+                <div class="lf">Shirts <span class="cn">178</span></div></div>
+              <div class="drop flat"><div class="dh">Dresses <span class="cn">157</span></div>
+                <div class="noch">flat · out of Top wear</div></div>
+              <div class="drop flat"><div class="dh">Co-ord sets <span class="cn">26</span></div>
+                <div class="noch">flat · out of Top wear</div></div>
+              <div class="drop"><div class="dh">Bottom Wear</div>
+                <div class="lf">All <span class="cn">187</span></div>
+                <div class="lf">Trousers <span class="cn">63</span></div>
+                <div class="lf mark">Pants &amp; Palazzo <span class="cn">119</span></div>
+                <div class="lf">Jeans <span class="cn">27</span></div></div>
+              <div class="drop flat"><div class="dh">Festive <span class="cn">152</span></div>
+                <div class="noch">flat · 5 links collapse in</div></div>
+              <div class="drop flat"><div class="dh">Winterwear <span class="cn">125</span></div>
+                <div class="noch">flat · 6 links collapse in</div></div>
+            </div>
+            <div class="miss"><b>Still unplaced —</b> the same 69 products, unless the decisions
+              below give them a home. Kaftan and Sweaters are safe; the rest are not.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. MAPPING ================= -->
+  <section id="mapping">
+    <div class="shead">
+      <div class="eyebrow">Section three</div>
+      <h2>Mapping — every menu item, and where it goes</h2>
+      <p class="snote">Read top to bottom, this is the whole migration of the navigation. The tags in the
+        right-hand column link to the decision that governs each row.</p>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>WooCommerce menu item</th><th class="num">n</th><th>Proposed menu</th><th>What changes</th><th>Governed by</th></tr></thead>
+        <tbody>
+          <tr class="band"><td colspan="5">Top level — 7 becomes 9</td></tr>
+          <tr><td class="k">New Arrivals<span class="sl">tag · new-arrivals-for-women-online</span></td><td class="num">157</td>
+            <td><span class="arrow">→</span> New Arrivals</td><td>Unchanged. Stays flat, stays tag-driven.</td>
+            <td><span class="chip c-keep">as-is</span></td></tr>
+          <tr><td class="k">Kurta Set<span class="sl">kurta-set-for-women</span></td><td class="num">15</td>
+            <td><span class="arrow">→</span> Kurta &amp; Kurta Sets › Kurta Sets</td>
+            <td>Demoted one level, joining Kurtas under a shared parent.</td>
+            <td><a class="dref ok" href="#d2">D2 ✓</a></td></tr>
+          <tr><td class="k">Top wear<span class="sl">top-wear-women</span></td><td class="num">1061</td>
+            <td><span class="arrow">→</span> <i>splits four ways</i></td>
+            <td>Dissolves into Tops, Dresses, Kurta &amp; Kurta Sets and Co-ord sets.</td>
+            <td><a class="dref" href="#d5">D5</a></td></tr>
+          <tr><td class="k">Bottom wear<span class="sl">bottom-wear-for-women</span></td><td class="num">187</td>
+            <td><span class="arrow">→</span> Bottom Wear</td><td>Same item, regrouped children.</td>
+            <td><span class="chip c-keep">as-is</span></td></tr>
+          <tr><td class="k">Festive Collection<span class="sl">festival-wear-for-ladies</span></td><td class="num">152</td>
+            <td><span class="arrow">→</span> Festive</td><td>Renamed and flattened — its 5 links go.</td>
+            <td><a class="dref" href="#d1">D1</a></td></tr>
+          <tr><td class="k">Winterwear<span class="sl">winter-wear-for-women</span></td><td class="num">125</td>
+            <td><span class="arrow">→</span> Winterwear</td><td>Flattened — its 6 links go.</td>
+            <td><a class="dref" href="#d1">D1</a></td></tr>
+          <tr><td class="k">Sale<span class="sl">sale · 3 levels, 17 links</span></td><td class="num">1090</td>
+            <td><span class="arrow">→</span> Sale</td>
+            <td>Loses a level. Its category tree becomes a view of the other eight.</td>
+            <td><span class="chip c-keep">simpler</span></td></tr>
+
+          <tr class="band"><td colspan="5">Top wear's children — where each one lands</td></tr>
+          <tr><td class="k">Dresses</td><td class="num">157</td><td><span class="arrow">→</span> Dresses <i>(top level)</i></td>
+            <td>Promoted out.</td><td><span class="chip c-new">promoted</span></td></tr>
+          <tr><td class="k">Kurtas &amp; Kurtis</td><td class="num">301</td>
+            <td><span class="arrow">→</span> Kurta &amp; Kurta Sets › Kurta</td><td>Promoted out, keeps a parent.</td>
+            <td><span class="chip c-new">promoted</span></td></tr>
+          <tr><td class="k">Dupatta &amp; Stole</td><td class="num">50</td>
+            <td><span class="arrow">→</span> Kurta &amp; Kurta Sets › Dupattas</td>
+            <td>Moves under Kurta, away from Top wear.</td><td><a class="dref" href="#d5">D5</a></td></tr>
+          <tr><td class="k">Tops &amp; Tunics</td><td class="num">342</td><td><span class="arrow">→</span> Tops › Tops &amp; Tunics</td>
+            <td>Stays put under the narrowed parent.</td><td><span class="chip c-keep">as-is</span></td></tr>
+          <tr><td class="k">Shirts</td><td class="num">178</td><td><span class="arrow">→</span> Tops › Shirts</td>
+            <td>Stays put.</td><td><span class="chip c-keep">as-is</span></td></tr>
+          <tr><td class="k">Co-Ord Sets<span class="sl">tag · co-ord-set-women</span></td><td class="num">26</td>
+            <td><span class="arrow">→</span> Co-ord sets <i>(top level)</i></td>
+            <td>Promoted out. Stays tag-driven — the <code>co-ords</code> category holds only 1.</td>
+            <td><a class="dref ok" href="#d4">D4 ✓</a></td></tr>
+
+          <tr class="band"><td colspan="5">Bottom wear's children</td></tr>
+          <tr><td class="k">Trousers &amp; Pants</td><td class="num">63</td><td><span class="arrow">→</span> Bottom Wear › Trousers</td>
+            <td>Renamed.</td><td><span class="chip c-keep">rename</span></td></tr>
+          <tr><td class="k">Palazzo</td><td class="num">82</td><td><span class="arrow">→</span> Bottom Wear › Pants &amp; Palazzo</td>
+            <td>Merges with Festive Palazzos (37) — the two share no products, so this adds.</td>
+            <td><a class="dref" href="#d3">D3</a></td></tr>
+          <tr><td class="k">Jeans</td><td class="num">27</td><td><span class="arrow">→</span> Bottom Wear › Jeans</td>
+            <td>Unchanged.</td><td><span class="chip c-keep">as-is</span></td></tr>
+          <tr><td class="k">Leggings &amp; Jeggings</td><td class="num">6</td><td><span class="arrow">→</span> fold into Pants &amp; Palazzo</td>
+            <td>Loses its link. All 6 sit in no other category — they vanish if not folded.</td>
+            <td><a class="dref" href="#d3">D3</a></td></tr>
+
+          <tr class="band"><td colspan="5">Links that disappear from the menu</td></tr>
+          <tr><td class="k">Festive: Kurtas · Palazzos · Dupattas · Skirts · Sharara</td><td class="num">144</td>
+            <td><span class="arrow">→</span> Festive <i>(flat)</i></td>
+            <td>Categories survive and stay reachable by URL; nothing in the menu points at them.</td>
+            <td><a class="dref" href="#d1">D1</a></td></tr>
+          <tr><td class="k">Winter: Jackets · Shirts · Kurti · Tops · Palazzo · Sweaters</td><td class="num">115</td>
+            <td><span class="arrow">→</span> Winterwear <i>(flat)</i></td>
+            <td>Same — six working links removed.</td><td><a class="dref" href="#d1">D1</a></td></tr>
+          <tr><td class="k">View All <i>(×4)</i></td><td class="num">—</td><td><span class="arrow">→</span> "All"</td>
+            <td>Becomes the first child of each dropdown rather than the last.</td>
+            <td><span class="chip c-keep">renamed</span></td></tr>
+          <tr><td class="k">Sale's middle level<span class="sl">Topwear · Bottom Wear · Festive Wear</span></td><td class="num">—</td>
+            <td><span class="arrow">→</span> removed</td><td>Sale goes from three levels to two.</td>
+            <td><span class="chip c-keep">simpler</span></td></tr>
+          <tr><td class="k">Shrugs · Sharara <i>(Sale)</i></td><td class="num">0</td><td><span class="arrow">→</span> dropped</td>
+            <td>Empty links in the live menu today.</td><td><span class="chip c-dead">empty</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 4. COVERAGE ================= -->
+  <section id="coverage">
+    <div class="shead">
+      <div class="eyebrow">Section four</div>
+      <h2>Coverage — do all products still have a home?</h2>
+      <p class="snote">Every one of the 1,559 published products was tested against the proposed structure.
+        <b>75 land nowhere</b> as it is currently specified. None of that is caused by the reorganisation —
+        most of it already exists — but the reorganisation is the moment to fix it.</p>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Category the proposal drops</th><th class="num">In it</th><th class="num">Only in it</th><th>Consequence</th><th>Governed by</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Kaftan</td><td class="num">11</td><td class="num">0</td>
+            <td>Safe to drop — all 11 are also filed under Dresses.</td><td><span class="chip c-keep">no loss</span></td></tr>
+          <tr><td class="k">Sweaters <i>(Topwear)</i></td><td class="num">3</td><td class="num">0</td>
+            <td>Safe to drop — all 3 are also Winter Sweaters.</td><td><span class="chip c-keep">no loss</span></td></tr>
+          <tr><td class="k">Shrugs · T-Shirts · Capris</td><td class="num">0</td><td class="num">0</td>
+            <td>Empty categories; nothing to lose.</td><td><span class="chip c-dead">empty</span></td></tr>
+          <tr><td class="k">Leggings &amp; Jeggings</td><td class="num">6</td><td class="num">6</td>
+            <td>All 6 disappear unless folded into Pants &amp; Palazzo.</td><td><a class="dref" href="#d3">D3</a></td></tr>
+          <tr><td class="k">Dhotis</td><td class="num">5</td><td class="num">5</td>
+            <td>All 5 disappear unless folded in.</td><td><a class="dref" href="#d3">D3</a></td></tr>
+          <tr><td class="k">Slacks</td><td class="num">3</td><td class="num">2</td>
+            <td>2 disappear; 1 survives via Festive.</td><td><a class="dref" href="#d3">D3</a></td></tr>
+          <tr><td class="k">Skirts <i>(Bottom wear)</i></td><td class="num">1</td><td class="num">1</td>
+            <td>Disappears unless folded in.</td><td><a class="dref" href="#d3">D3</a></td></tr>
+          <tr><td class="k">Uncategorized</td><td class="num">33</td><td class="num">33</td>
+            <td>Never had a home. Needs the owner to say what they are.</td><td><a class="dref" href="#d6">D6</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="snote"><b>The other 30 homeless products</b> are not a structural problem — they were simply
+      never migrated. 18 sit only in Sale categories, and 6 are Co-Ord Sets and 4 camisoles filed under
+      Top wear alone. Together with the 15 Kurta Sets, they are part of the <b>50 published products that have
+      never been copied across</b>, because the last synchronisation ran on <b>29 June 2026</b>. Around 20 of
+      those 50 are ordinary new stock that maps perfectly well. <b>Run the migration again before judging any
+      category's size.</b></p>
+  </section>
+
+  <!-- ================= 5. DECISIONS ================= -->
+  <section id="decisions">
+    <div class="shead">
+      <div class="eyebrow">Section five</div>
+      <h2>The seven decisions, in full</h2>
+      <p class="snote">These are referenced as D1–D7 throughout the tables above. Each names who has to
+        answer it. Filled circles mark the recommendation.</p>
+    </div>
+
+    <div class="dlist">
+
+      <div class="dcard block" id="d1">
+        <div class="dhead"><span class="dnum">D1</span><h3>Does the nine-category structure go ahead?</h3>
+          <span class="who">Owner + developer · blocker</span></div>
+        <p>Everything else depends on this one. The nine-way structure flattens <b>Festive</b> and
+          <b>Winterwear</b> into single categories, which removes eleven working links from the menu, and it
+          dissolves <b>Top wear</b> into four separate items. Both are deliberate simplifications, but they
+          are choices rather than fixes.</p>
+        <ul class="opts">
+          <li class="rec">Go ahead as specified — nine items, two levels throughout.</li>
+          <li>Go ahead but keep Festive and Winterwear's dropdowns, so no links are lost. This is a
+            middle path and costs nothing structurally.</li>
+          <li>Keep the current seven-item shape and apply only the data fixes in D2–D7.</li>
+        </ul>
+        <div class="warn">⚠️ Worth knowing: the Shopify store currently runs a different four-column menu
+          again, modelled on a demo theme. Whichever option is chosen, that will be rebuilt to match — it is
+          not a third alternative.</div>
+      </div>
+
+      <div class="dcard done" id="d2">
+        <div class="dhead"><span class="dnum">D2</span><h3>What counts as a Kurta Set?</h3>
+          <span class="who">Answered — no input needed</span></div>
+        <p>This was open for months on the belief that nothing in the catalogue identified a two-piece set.
+          That was wrong. WooCommerce has a top-level <b>Kurta Set</b> category holding <b>15 products</b>,
+          and it is the second item in the live menu. Each is named
+          <code>Kurta: T1247 / Bottom: F1247 …</code>, carrying both garment codes in the title.</p>
+        <p>All 15 sit in that category and no other, which is exactly why they were never copied to Shopify:
+          the migration assigns categories first, and a product whose only category is unrecognised gets
+          skipped. <b>They are missing, not unclassifiable.</b></p>
+        <ul class="opts">
+          <li class="rec">Map the category and re-run the migration for those 15 products.</li>
+          <li>Also bring across the 13 individually-sold halves of these sets, which are currently
+            filed only under Sale.</li>
+        </ul>
+        <div class="warn">✓ The <code>Kurta: … / Bottom: …</code> naming is a reliable marker, and the
+          co-ord sets follow the same convention. Worth keeping as the rule if more two-piece stock arrives.</div>
+      </div>
+
+      <div class="dcard" id="d3">
+        <div class="dhead"><span class="dnum">D3</span><h3>Are Festive and Winterwear separate wardrobes, or views of the same one?</h3>
+          <span class="who">Owner</span></div>
+        <p>The Festive <b>Palazzos</b> (37) and the Winter <b>Palazzo</b> (21) share no products with the
+          main <b>Palazzo</b> category (82) — they are three separate sets of garments, not three views of one.
+          So a shopper browsing Bottom wear never sees 58 palazzos that exist on the site. The same applies to
+          Slacks, Dhotis, Leggings and Skirts, which hold 14 products between them that sit in no other category.</p>
+        <ul class="opts">
+          <li class="rec">Fold them all into Bottom Wear, and keep the Festive and Winterwear links as
+            alternative routes to the same garments. Nothing is lost and Bottom wear stops under-counting.</li>
+          <li>Keep Festive and Winterwear as deliberately separate wardrobes, and accept that Bottom wear
+            shows only part of the range.</li>
+        </ul>
+        <div class="warn">⚠️ If nothing is done, 14 garments have no place in the new structure at all —
+          6 leggings, 5 dhotis, 2 slacks and 1 skirt.</div>
+      </div>
+
+      <div class="dcard done" id="d4">
+        <div class="dhead"><span class="dnum">D4</span><h3>Why does Co-ord sets look almost empty?</h3>
+          <span class="who">Answered — one optional question</span></div>
+        <p>Because it was being measured against the wrong thing. The menu item <b>Co-Ord Sets</b> points at a
+          product <b>tag</b>, not a category — the tag holds <b>26</b> products while the <code>co-ords</code>
+          category holds <b>1</b>. Anything that maps co-ord sets by category will find almost nothing.</p>
+        <p>Measured correctly, the data is sound: 26 tagged in WooCommerce, 20 copied across, and the missing
+          6 are recent stock added after the last synchronisation. The related <b>Ensembles</b> (18) and
+          <b>Wedding Collection</b> (13) collections are exact carryovers with nothing missing.</p>
+        <ul class="opts">
+          <li class="rec">Re-run the migration to collect the 6. No judgement required.</li>
+          <li><b>Optional, owner's call:</b> around 50 products have "co-ord" in their name but were never
+            tagged. Widen the tag to include them, or leave the tag as deliberate curation?</li>
+        </ul>
+        <div class="warn">✓ Broader lesson: WooCommerce carries merchandising in <b>tags</b> as well as
+          categories, and two menu items are tag-driven. Any mapping built only from the category list will
+          miss them.</div>
+      </div>
+
+      <div class="dcard" id="d5">
+        <div class="dhead"><span class="dnum">D5</span><h3>Where do dupattas belong?</h3>
+          <span class="who">Owner</span></div>
+        <p>Dupattas are currently filed under <b>Top wear</b> (50) and again under <b>Festive</b> (26). The
+          proposal moves them under Kurta &amp; Kurta Sets. This matters more than it sounds: dupattas are the
+          single largest group inside Top wear that is not a top, and leaving them there is what made them
+          flood the "new arrivals" listings earlier this year.</p>
+        <ul class="opts">
+          <li class="rec">Put them under Kurta &amp; Kurta Sets, and keep the Festive link as a second route.</li>
+          <li>Give Dupattas their own top-level item — they are an accessory, not a garment.</li>
+          <li>Leave them in Top wear.</li>
+        </ul>
+      </div>
+
+      <div class="dcard" id="d6">
+        <div class="dhead"><span class="dnum">D6</span><h3>What happens to empty and unused categories?</h3>
+          <span class="who">Owner · housekeeping</span></div>
+        <p>Five categories hold no products at all (Shrugs, T-Shirts, Capris, Festive Dhotis, and the empty
+          Sale winter branch). A further group holds products but appears in no menu. Separately,
+          <b>33 products sit in "Uncategorized"</b> and need someone to say what they are — no script can
+          decide that.</p>
+        <ul class="opts">
+          <li class="rec">Delete the empty ones; keep the populated but unlinked ones reachable by URL,
+            which preserves search rankings.</li>
+          <li>Delete nothing — no risk, but the admin stays cluttered.</li>
+          <li>Delete everything unlinked — ⚠️ this breaks live URLs that may be linked from elsewhere.</li>
+        </ul>
+        <div class="warn">⚠️ The 33 Uncategorized products are the only genuinely unanswerable item in this
+          document. Everything else can be resolved from data.</div>
+      </div>
+
+      <div class="dcard" id="d7">
+        <div class="dhead"><span class="dnum">D7</span><h3>Does the old New Arrivals listing retire?</h3>
+          <span class="who">Owner · housekeeping</span></div>
+        <p>There is an older New Arrivals collection of 128 products on Shopify that has been superseded by a
+          newer arrangement. It is not linked from anywhere, but its address may still be shared or indexed.</p>
+        <ul class="opts">
+          <li class="rec">Point it at the new New Arrivals page with a redirect, so old links keep working.</li>
+          <li>Leave it in place, unlinked.</li>
+          <li>Delete it.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span>Sources: mustardfashion.com main menu · WooCommerce REST API v3 · Shopify Admin API</span>
+    <span>·</span><span>All figures read 31 July 2026</span>
+    <span>·</span><span>Full working notes: reorg_plan.md</span>
+  </footer>
+
+</div>
