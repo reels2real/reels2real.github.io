@@ -37,11 +37,14 @@ h2 { margin: 0; font: 400 1.8rem/1 var(--display); letter-spacing: .04em; border
 .issue div { padding: 1rem 1.1rem; display: grid; gap: .45rem; align-content: center; }
 .issue .tag { font: 700 .8rem var(--letter); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .issue b { font: 400 2rem/1 var(--display); letter-spacing: .03em; }
-.issue .go { font-weight: 700; color: var(--red); }
+.issue .go { justify-self: start; font-weight: 700; color: var(--ink); background: var(--yellow); border: 2.5px solid var(--ink);
+  padding: .3rem .9rem; box-shadow: 2px 2px 0 var(--ink); margin-top: .2rem; }
 .issue:hover, .issue:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); outline: none; }
 .links { display: flex; flex-wrap: wrap; gap: .6rem; }
 .links a { border: 2.5px solid var(--ink); background: var(--paper); padding: .35rem .8rem; font-weight: 700; color: var(--ink); text-decoration: none; box-shadow: 2px 2px 0 var(--ink); }
 .links a:hover, .links a:focus-visible { background: var(--yellow); outline: none; }
+.links a.primary { background: var(--yellow); font-size: 1.1rem; }
+.links a.primary:hover, .links a.primary:focus-visible { background: #fff; }
 footer { font-size: .9rem; color: var(--muted); }
 @media (max-width: 36rem) { .issue { grid-template-columns: 1fr; } .issue img { border-right: 0; border-bottom: 3px solid var(--ink); } }
 </style>
@@ -65,6 +68,7 @@ footer { font-size: .9rem; color: var(--muted); }
   </a>
 
   <div class="links">
+    <a class="primary" href="comic/primeadmuter/">Read the comic</a>
     <a href="https://youtu.be/Ef7TNzE7l3A">Watch the demo</a>
     <a href="https://github.com/reels2real/prime-ad-muter">Get the app and code</a>
   </div>
